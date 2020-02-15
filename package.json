@@ -1,10 +1,11 @@
 {
-  "name": "vue-pixi-toolkit",
+  "name": "vue-pixi-wrapper",
   "version": "0.1.0",
   "private": true,
+  "main": "./dist/vue-pixi-wrapper.common.common.js",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --target lib --name vue-pixi-wrapper ./src/index.ts",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
