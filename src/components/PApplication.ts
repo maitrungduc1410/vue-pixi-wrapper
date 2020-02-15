@@ -64,12 +64,6 @@ export default class PApplication extends Vue {
     if (this.skipHello) {
       utils.skipHello()
     }
-
-    if (process.env.NODE_ENV === 'development') {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const PIXI = require('pixi.js')
-      window.PIXI = PIXI
-    }
   }
 
   mounted () {

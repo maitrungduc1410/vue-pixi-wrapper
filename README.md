@@ -1,4 +1,4 @@
-# vue-pixi-toolkit
+# vue-pixi-wrapper
 
 ## Project setup
 ```
