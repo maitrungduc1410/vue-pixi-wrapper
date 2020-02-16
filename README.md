@@ -1,29 +1,14 @@
-# vue-pixi-wrapper
+# Vue PIXI Wrapper
+Create PIXI application using Vue reactive style 👏
 
-## Project setup
+## Installation
 ```
-yarn install
+yarn install vue-pixi-wrapper
 ```
-
-### Compiles and hot-reloads for development
+or
 ```
-yarn serve
+npm install --save vue-pixi-wrapper
 ```
-
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Run your unit tests
-```
-yarn test:unit
-```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Usage
+Look at example in folder `dev`
+ 

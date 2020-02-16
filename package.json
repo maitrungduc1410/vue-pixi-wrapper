@@ -1,22 +1,22 @@
 {
   "name": "vue-pixi-wrapper",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "🖐VueJS wrapper implementation for creating application with PIXI.js",
-  "main": "./dist/vue-pixi-wrapper.common.js",
+  "author": "Mai Trung Duc",
+  "main": "./lib/index.js",
   "files": [
-    "dist/",
-    "src/",
+    "lib/",
     "LICENSE"
   ],
-  "types": "./src/index.d.ts",
-  "author": "Mai Trung Duc",
+  "types": "./lib/index.d.ts",
   "license": "MIT",
   "repository": "git+https://github.com/maitrungduc1410/vue-pixi-wrapper.git",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --target lib --name vue-pixi-wrapper ./src/index.ts",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "build:lib": "tsc --p tsconfig.prod.json"
   },
   "dependencies": {
     "core-js": "^3.6.4",

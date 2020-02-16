@@ -74,16 +74,29 @@
 </template>
 
 <script>
-import PApplication from '@/components/PApplication'
-import PContainer from '@/components/PContainer'
-import PSprite from '@/components/PSprite'
-import PText from '@/components/PText'
-import PGraphics from '@/components/PGraphics'
-import PAnimatedSprite from '@/components/PAnimatedSprite'
-import PBitmapText from '@/components/PBitmapText'
+// import PApplication from '@/components/PApplication'
+// import PContainer from '@/components/PContainer'
+// import PSprite from '@/components/PSprite'
+// import PText from '@/components/PText'
+// import PGraphics from '@/components/PGraphics'
+// import PAnimatedSprite from '@/components/PAnimatedSprite'
+// import PBitmapText from '@/components/PBitmapText'
 import { Loader } from 'pixi.js'
-import PParticleContainer from '@/components/PParticleContainer'
-import PTilingSprite from '@/components/PTilingSprite'
+// import PParticleContainer from '@/components/PParticleContainer'
+// import PTilingSprite from '@/components/PTilingSprite'
+
+import {
+  PApplication,
+  PContainer,
+  PSprite,
+  PText,
+  PGraphics,
+  PAnimatedSprite,
+  PBitmapText,
+  PParticleContainer,
+  PTilingSprite
+} from '../dist/vue-pixi-wrapper.common'
+import * as PIXI from 'pixi.js'
 
 export default {
   components: {
@@ -200,7 +213,10 @@ export default {
       g.endFill()
     },
     onAssetsLoaded () {
-      this.shouldRenderBitmap = true
+      setTimeout(() => {
+        console.log(1)
+        this.shouldRenderBitmap = true
+      }, 1000)
     }
   }
 }
