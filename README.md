@@ -4,7 +4,6 @@
 </p>
 
 <h2 align="center">Vue PIXI Wrapper</h2>
-<hr>
 
 Create PIXI application using Vue reactive style 👏
 
