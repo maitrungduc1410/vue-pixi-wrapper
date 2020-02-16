@@ -1,4 +1,11 @@
-# Vue PIXI Wrapper
+<p align="center">
+  <a href="https://www.npmjs.com/package/vue-pixi-wrapper"><img src="https://img.shields.io/npm/v/vue-pixi-wrapper" alt="Npm version"></a>
+  <a href="https://github.com/maitrungduc1410/vue-pixi-wrapper"><img src="https://img.shields.io/github/license/maitrungduc1410/vue-pixi-wrapper" alt="Npm version"></a>
+</p>
+
+<h2 align="center">Vue PIXI Wrapper</h2>
+<hr>
+
 Create PIXI application using Vue reactive style 👏
 
 ## Installation
