@@ -27,7 +27,48 @@
           :text="'Hello World'"
           :textStyle="style"
         />
+        <p-graphics
+          :draw="draw"
+        />
+        <p-animated-sprite
+          :images="['https://pixijs.io/examples/examples/assets/flowerTop.png', 'https://pixijs.io/examples/examples/assets/eggHead.png']"
+          :animationSpeed="0.05"
+        />
+        <p-bitmap-text
+          v-if="shouldRenderBitmap"
+          :text="'Hello World from Bitmap Text'"
+          :textStyle="{ font: '50px Desyrel' }"
+        />
       </p-container>
+      <p-particle-container
+        :position="true"
+      >
+        <p-sprite
+          anchor={0.5}
+          :x="200"
+          :y="200"
+          :src="'https://s3-us-west-2.amazonaws.com/s.cdpn.io/693612/IaUrttj.png'"
+        />
+        <p-sprite
+          anchor={0.5}
+          :x="250"
+          :y="250"
+          :src="'https://s3-us-west-2.amazonaws.com/s.cdpn.io/693612/IaUrttj.png'"
+        />
+        <p-sprite
+          anchor={0.5}
+          :x="300"
+          :y="300"
+          :src="'https://s3-us-west-2.amazonaws.com/s.cdpn.io/693612/IaUrttj.png'"
+        />
+      </p-particle-container>
+      <p-tiling-sprite
+        :image="'https://s3-us-west-2.amazonaws.com/s.cdpn.io/693612/p2.jpeg'"
+        :width="200"
+        :height="200"
+        :x="400"
+        :y="400"
+      />
     </p-application>
   </div>
 </template>
@@ -37,13 +78,24 @@ import PApplication from '@/components/PApplication'
 import PContainer from '@/components/PContainer'
 import PSprite from '@/components/PSprite'
 import PText from '@/components/PText'
+import PGraphics from '@/components/PGraphics'
+import PAnimatedSprite from '@/components/PAnimatedSprite'
+import PBitmapText from '@/components/PBitmapText'
+import { Loader } from 'pixi.js'
+import PParticleContainer from '@/components/PParticleContainer'
+import PTilingSprite from '@/components/PTilingSprite'
 
 export default {
   components: {
     PApplication,
     PContainer,
     PSprite,
-    PText
+    PText,
+    PGraphics,
+    PAnimatedSprite,
+    PBitmapText,
+    PParticleContainer,
+    PTilingSprite
   },
   data () {
     return {
@@ -73,8 +125,14 @@ export default {
         dropShadowDistance: 6,
         wordWrap: true,
         wordWrapWidth: 440
-      }
+      },
+      shouldRenderBitmap: false
     }
+  },
+  created () {
+    const loader = new Loader()
+    loader.add('desyrel', 'https://pixijs.io/examples/examples/assets/bitmap-font/desyrel.xml')
+      .load(this.onAssetsLoaded)
   },
   methods: {
     scaleObject (container) {
@@ -114,6 +172,35 @@ export default {
     },
     changeSprite () {
       this.sprites[0].src = '/bunny.png'
+    },
+    draw (g) {
+      g.clear()
+      // start drawing
+      g.beginFill(0xff3300)
+      g.lineStyle(4, 0xffd900, 1)
+
+      g.moveTo(50, 50)
+      g.lineTo(250, 50)
+      g.lineTo(100, 100)
+      g.lineTo(50, 50)
+      g.endFill()
+
+      g.lineStyle(2, 0x0000ff, 1)
+      g.beginFill(0xff700b, 1)
+      g.drawRect(50, 150, 120, 120)
+
+      g.lineStyle(2, 0xff00ff, 1)
+      g.beginFill(0xff00bb, 0.25)
+      g.drawRoundedRect(150, 100, 300, 100, 15)
+      g.endFill()
+
+      g.lineStyle(0)
+      g.beginFill(0xffff0b, 0.5)
+      g.drawCircle(470, 90, 60)
+      g.endFill()
+    },
+    onAssetsLoaded () {
+      this.shouldRenderBitmap = true
     }
   }
 }
