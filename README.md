@@ -1,20 +1,30 @@
-<p align="center">
-  <a href="https://www.npmjs.com/package/vue-pixi-wrapper"><img src="https://img.shields.io/npm/v/vue-pixi-wrapper" alt="Npm version"></a>
-  <a href="https://github.com/maitrungduc1410/vue-pixi-wrapper/blob/master/LICENSE"><img src="https://img.shields.io/github/license/maitrungduc1410/vue-pixi-wrapper" alt="License"></a>
-</p>
+---
+description: Create PIXI application using Vue reactive style
+---
 
-<h2 align="center">Vue PIXI Wrapper</h2>
+# Introduction
 
-Create PIXI application using Vue reactive style 👏
+ [![Npm version](https://img.shields.io/npm/v/vue-pixi-wrapper)](https://www.npmjs.com/package/vue-pixi-wrapper) [![License](https://img.shields.io/github/license/maitrungduc1410/vue-pixi-wrapper)](https://github.com/maitrungduc1410/vue-pixi-wrapper/blob/master/LICENSE) [![License](https://img.shields.io/github/stars/maitrungduc1410/vue-pixi-wrapper?style=social)](https://github.com/maitrungduc1410/vue-pixi-wrapper)
 
-## Installation
-```
+![](.gitbook/assets/group-1.png)
+
+### About
+
+Vue PIXI Wrapper is a wrapper library to create PIXI application using VueJS. All components are reactive \(auto re-render when data change\)
+
+### Installation
+
+```text
 yarn install vue-pixi-wrapper
 ```
+
 or
-```
+
+```text
 npm install --save vue-pixi-wrapper
 ```
-## Usage
-Look at example in folder `dev`
- 
+
+### ❤️Support
+
+If this project is helpful, please give it a star on [Github](https://github.com/maitrungduc1410/vue-pixi-wrapper)
+
