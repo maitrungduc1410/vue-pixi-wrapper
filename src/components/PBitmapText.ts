@@ -23,8 +23,13 @@ export default class PBitmapText extends mixins(PContainer) {
     }
   }) readonly textStyle!: IFontStyle
 
+  public pBitmapText: BitmapText | undefined
+
   get instance () {
-    return new BitmapText(this.text, this.textStyle)
+    if (!this.pBitmapText) {
+      this.pBitmapText = new BitmapText(this.text, this.textStyle)
+    }
+    return this.pBitmapText
   }
 
   @Watch('text')

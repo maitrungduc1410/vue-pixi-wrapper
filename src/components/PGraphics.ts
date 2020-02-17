@@ -7,9 +7,14 @@ import { mixins } from 'vue-class-component'
 export default class PGraphics extends mixins(PContainer) {
   @Prop({ type: Function, required: true }) readonly draw!: (g: Graphics) => void
 
+  public pGraphics: Graphics | undefined
+
   get instance () {
-    const g = new Graphics()
-    this.draw(g)
-    return g
+    if (!this.pGraphics) {
+      this.pGraphics = new Graphics()
+      this.draw(this.pGraphics)
+    }
+
+    return this.pGraphics
   }
 }

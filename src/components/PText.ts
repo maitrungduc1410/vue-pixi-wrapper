@@ -8,9 +8,13 @@ export default class PText extends mixins(PSprite) {
   @Prop() readonly text!: string
   @Prop() readonly textStyle?: object
   @Prop() readonly canvas?: HTMLCanvasElement
+  public pText: Text | undefined
 
   get instance () {
-    return new Text(this.text, this.textStyle, this.canvas)
+    if (!this.pText) {
+      this.pText = new Text(this.text, this.textStyle, this.canvas)
+    }
+    return this.pText
   }
 
   @Watch('text')

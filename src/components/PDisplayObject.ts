@@ -39,8 +39,13 @@ export default class PDisplayObject extends Vue {
 
   @Inject() readonly app: any
 
+  public pDisplayObject: DisplayObject | undefined
+
   get instance () {
-    return new DisplayObject()
+    if (!this.pDisplayObject) {
+      this.pDisplayObject = new DisplayObject()
+    }
+    return this.pDisplayObject
   }
 
   beforeDestroy () {

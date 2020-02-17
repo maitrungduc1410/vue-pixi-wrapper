@@ -11,6 +11,7 @@ export default class PAnimatedSprite extends mixins(PSprite) {
   @Prop({ type: Number, default: 0 }) readonly initialFrame?: number
 
   public textureArray: Texture[] = []
+  public pAnimatedSprite: AnimatedSprite | undefined
 
   created () {
     for (const image of this.images) {
@@ -20,10 +21,13 @@ export default class PAnimatedSprite extends mixins(PSprite) {
   }
 
   get instance () {
-    const sprite = new AnimatedSprite(this.textureArray)
-    sprite.gotoAndPlay(this.initialFrame as number)
-    sprite.animationSpeed = this.animationSpeed as number
-    return sprite
+    if (!this.pAnimatedSprite) {
+      this.pAnimatedSprite = new AnimatedSprite(this.textureArray)
+      this.pAnimatedSprite.gotoAndPlay(this.initialFrame as number)
+      this.pAnimatedSprite.animationSpeed = this.animationSpeed as number
+    }
+
+    return this.pAnimatedSprite
   }
 
   @Watch('animationSpeed')

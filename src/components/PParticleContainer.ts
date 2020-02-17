@@ -19,8 +19,13 @@ export default class PParticleContainer extends mixins(PContainer) {
   @Prop({ type: Number, default: 16384 }) readonly batchSize?: number
   @Prop({ type: Boolean, default: false }) readonly autoResize?: boolean
 
+  public pParticleContainer: ParticleContainer | undefined
+
   get instance () {
-    return new ParticleContainer(this.maxSize, this.properties, this.batchSize, this.autoResize)
+    if (!this.pParticleContainer) {
+      this.pParticleContainer = new ParticleContainer(this.maxSize, this.properties, this.batchSize, this.autoResize)
+    }
+    return this.pParticleContainer
   }
 
   @Watch('autoResize')

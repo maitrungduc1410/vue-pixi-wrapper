@@ -11,8 +11,13 @@ export default class PSprite extends mixins(PContainer) {
   @Prop() readonly tint!: number
   @Prop() readonly src!: string
 
+  public pSprite: Sprite | undefined
+
   get instance () {
-    return this.src ? Sprite.from(this.src) : new Sprite()
+    if (!this.pSprite) {
+      this.pSprite = this.src ? Sprite.from(this.src) : new Sprite()
+    }
+    return this.pSprite
   }
 
   // set instance (newSrc: any) {
