@@ -3,6 +3,10 @@ import { Texture, AnimatedSprite } from 'pixi.js'
 import PSprite from './PSprite'
 import { mixins } from 'vue-class-component'
 
+/**
+ * An AnimatedSprite is a simple way to display an animation depicted by a list of textures
+ *
+ */
 @Component
 export default class PAnimatedSprite extends mixins(PSprite) {
   @Prop({ type: Array, default: [] }) readonly images!: string[]

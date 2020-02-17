@@ -3,6 +3,10 @@ import { Sprite } from 'pixi.js'
 import PContainer from './PContainer'
 import { mixins } from 'vue-class-component'
 
+/**
+ * The Sprite object is the base for all textured objects that are rendered to the screen
+ *
+ */
 @Component
 export default class PSprite extends mixins(PContainer) {
   @Prop({ default: 0 }) readonly anchorX!: number

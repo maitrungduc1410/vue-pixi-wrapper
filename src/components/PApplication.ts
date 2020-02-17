@@ -15,6 +15,11 @@ interface IApplication {
   isReady: boolean;
 }
 
+/**
+ * Convenience class to create a new PIXI application.
+ *
+ * This class automatically creates the renderer, ticker and root container.
+ */
 @Component
 export default class PApplication extends Vue {
   @Prop({ type: String, default: 'canvas' }) readonly canvasId!: string

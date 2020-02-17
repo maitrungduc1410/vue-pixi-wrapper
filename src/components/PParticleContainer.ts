@@ -12,6 +12,10 @@ interface IProperties {
   tint?: boolean | undefined;
 }
 
+/**
+ * The ParticleContainer class is a really fast version of the Container built solely for speed, so use when you need a lot of sprites or particles.
+ *
+ */
 @Component
 export default class PParticleContainer extends mixins(PContainer) {
   @Prop({ type: Number, default: 1500 }) readonly maxSize?: number

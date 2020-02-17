@@ -20,8 +20,8 @@ or
 npm install --save vue-pixi-wrapper
 ```
 # Documentation
-Check our website: https://mai-trung-duc.gitbook.io/vue-pixi-wrapper/
+Check our website: https://maitrungduc.gitbook.io/vue-pixi-wrapper
 
 # ❤️Support
-If this project is helpful, please give it a star on [Github](https://github.com/maitrungduc1410/vue-pixi-wrapper)
+If this project is helpful, please give me a star on [Github](https://github.com/maitrungduc1410/vue-pixi-wrapper)
 

@@ -13,6 +13,10 @@ interface IFontStyle {
   tint?: number | undefined;
 }
 
+/**
+ * A BitmapText object will create a line or multiple lines of text using bitmap font.
+ *
+ */
 @Component
 export default class PBitmapText extends mixins(PContainer) {
   @Prop({ type: String, required: true }) readonly text!: string

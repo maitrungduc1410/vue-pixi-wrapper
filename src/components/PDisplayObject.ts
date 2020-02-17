@@ -53,6 +53,11 @@ export default class PDisplayObject extends Vue {
   }
 
   created () {
+    if (!this.app) {
+      console.error(`[RENDER ERROR]: You're trying to render component ${this.instance.constructor.name} outside of Application. All display objects (Container, Sprite,...) must be rendered within Application`)
+      return
+    }
+
     this.app.EventBus.$on('ready', () => {
       this.addToParent()
       this.app.EventBus.$off('ready') // remove this event listener as it may conflict with user's provide event

@@ -3,6 +3,10 @@ import { Text } from 'pixi.js'
 import PSprite from './PSprite'
 import { mixins } from 'vue-class-component'
 
+/**
+ * A Text Object will create a line or multiple lines of text.
+ *
+ */
 @Component
 export default class PText extends mixins(PSprite) {
   @Prop() readonly text!: string

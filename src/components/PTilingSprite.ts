@@ -3,6 +3,10 @@ import { TilingSprite, Texture } from 'pixi.js'
 import PSprite from './PSprite'
 import { mixins } from 'vue-class-component'
 
+/**
+ * A tiling sprite is a fast way of rendering a tiling image
+ *
+ */
 @Component
 export default class PTilingSprite extends mixins(PSprite) {
   @Prop({ type: String, required: true }) readonly image!: string
