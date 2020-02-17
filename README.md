@@ -19,8 +19,10 @@ or
 ```text
 npm install --save vue-pixi-wrapper
 ```
+# Documentation
+Check our website: https://mai-trung-duc.gitbook.io/vue-pixi-wrapper/
 
-### ❤️Support
+# ❤️Support
 
 If this project is helpful, please give it a star on [Github](https://github.com/maitrungduc1410/vue-pixi-wrapper)
 
