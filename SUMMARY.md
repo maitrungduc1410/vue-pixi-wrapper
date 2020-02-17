@@ -13,4 +13,5 @@
 * [Bitmap Text](__docs__/bitmap-text.md)
 * [Particle Container](__docs__/particle-container.md)
 * [Tiling Sprite](__docs__/tiling-sprite.md)
+* [FAQ](faq.md)
 
