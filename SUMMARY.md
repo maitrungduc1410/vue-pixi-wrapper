@@ -2,7 +2,7 @@
 
 * [Introduction](README.md)
 
-## Documentation
+## Components
 
 * [Application](__docs__/application.md)
 * [Container](__docs__/container.md)
