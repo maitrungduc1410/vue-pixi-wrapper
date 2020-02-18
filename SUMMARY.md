@@ -15,3 +15,10 @@
 * [Tiling Sprite](__docs__/tiling-sprite.md)
 * [FAQ](__docs__/faq.md)
 
+## Examples
+
+* [DEMO-BASIC](examples/demo-basic/README.md)
+  * [Container](examples/demo-basic/container.md)
+  * [Transparent Background](examples/demo-basic/transparent-background.md)
+  * [Tinting](examples/demo-basic/tinting.md)
+
