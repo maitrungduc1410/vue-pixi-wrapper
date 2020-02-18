@@ -7,10 +7,12 @@ import {
   MaskData
 } from 'pixi.js'
 import { Vue, Prop, Watch, Component, Inject } from 'vue-property-decorator'
+import { eventHandlers } from '../constants'
 
 @Component
 export default class PDisplayObject extends Vue {
-  @Prop({ default: 1 }) readonly alpha!: number
+  @Prop({ type: Array, default: () => { return [] } }) readonly events!: string[]
+  @Prop({ type: Number, default: 1 }) readonly alpha!: number
   @Prop({ type: Number, default: 0 }) readonly angle!: number
   @Prop({ type: Boolean, default: false }) readonly buttonMode!: boolean
   @Prop({ type: Boolean, default: false }) readonly cacheAsBitmap!: boolean
@@ -49,6 +51,7 @@ export default class PDisplayObject extends Vue {
   }
 
   beforeDestroy () {
+    this.instance.removeAllListeners() // remove all event listeners
     this.instance.parent.removeChild(this.instance)
   }
 
@@ -66,16 +69,45 @@ export default class PDisplayObject extends Vue {
     if (this.app.isReady) {
       this.addToParent()
     }
+
+    this.initProps()
+    this.initEvents()
   }
 
   addToParent () {
     const { instance }: any = this.$parent
     instance.addChild(this.instance)
+  }
 
+  initProps () {
+    this.instance.alpha = this.alpha
+    this.instance.angle = this.angle
+    this.instance.buttonMode = this.buttonMode
+    this.instance.cacheAsBitmap = this.cacheAsBitmap
+    this.instance.cursor = this.cursor as string
+    this.instance.interactive = this.interactive
+    this.instance.pivot.x = this.pivotX
+    this.instance.pivot.y = this.pivotY
+    this.instance.scale.x = this.scaleX
+    this.instance.scale.y = this.scaleY
+    this.instance.skew.x = this.skewX
+    this.instance.skew.y = this.skewY
+    this.instance.visible = this.visible
     this.instance.x = this.x
     this.instance.y = this.y
+    this.instance.zIndex = this.zIndex
+  }
 
-    // TODO: check if user declare display Object outsite of application
+  initEvents () {
+    for (const event of this.events) {
+      const index = eventHandlers.findIndex(item => item === event)
+
+      if (index === -1) {
+        console.error(`[Even listener error]: There's no event listener for event name '${event}'`)
+      } else {
+        this.instance.on(event, () => this.$emit(event))
+      }
+    }
   }
 
   @Watch('alpha')

@@ -1,75 +1,30 @@
 <template>
   <div id="app">
-    <div>
-      <button @click="changeWidth">Change Width</button>
-      <button @click="changeHeight">Change Height</button>
-      <button @click="changeBackgroundColor">Change Background Color</button>
-      <button @click="changeResolution">Change Resolution</button>
-      <button @click="addSprite">addSprite</button>
-      <button @click="removeSprite">removeSprite</button>
-      <button @click="changeSprite">changeSprite</button>
-      <button @click="changeText">changeText</button>
-    </div>
     <p-application
-      :width="width"
-      :height="height"
-      :backgroundColor="backgroundColor"
-      :resolution="resolution"
+      :backgroundColor="0x1099bb"
+      :width="800"
+      :height="600"
     >
-      <p-container>
-        <p-sprite
-          v-for="s in sprites"
-          :key="`${s.x}-${s.y}`"
-          :src="s.src"
-          :x="s.x"
-          :y="s.y"
-        />
-        <p-text
-          :text="text"
-          :textStyle="style"
-        />
-        <p-graphics
-          :draw="draw"
-        />
-        <p-animated-sprite
-          :images="['https://pixijs.io/examples/examples/assets/flowerTop.png', 'https://pixijs.io/examples/examples/assets/eggHead.png']"
-          :animationSpeed="0.05"
-        />
-        <p-bitmap-text
-          v-if="shouldRenderBitmap"
-          :text="text"
-          :textStyle="{ font: '50px Desyrel' }"
-        />
-      </p-container>
-      <p-particle-container
-        :position="true"
+      <p-container
+        :x="400"
+        :y="300"
+        :interactive="true"
+        :pivotX="pivot.x"
+        :pivotY="pivot.y"
+        :events="['click']"
       >
         <p-sprite
-          anchor={0.5}
-          :x="200"
-          :y="200"
-          :src="'https://s3-us-west-2.amazonaws.com/s.cdpn.io/693612/IaUrttj.png'"
+          v-for="n in 25"
+          :key="n"
+          :src="'/bunny.png'"
+          :x="((n - 1) % 5) * 40"
+          :y="Math.floor((n - 1) / 5) * 40"
+          :anchorX="0.5"
+          :anchorY="0.5"
+          :scaleX="scale.x"
+          :scaleY="scale.y"
         />
-        <p-sprite
-          anchor={0.5}
-          :x="250"
-          :y="250"
-          :src="'https://s3-us-west-2.amazonaws.com/s.cdpn.io/693612/IaUrttj.png'"
-        />
-        <p-sprite
-          anchor={0.5}
-          :x="300"
-          :y="300"
-          :src="'https://s3-us-west-2.amazonaws.com/s.cdpn.io/693612/IaUrttj.png'"
-        />
-      </p-particle-container>
-      <p-tiling-sprite
-        :image="'https://s3-us-west-2.amazonaws.com/s.cdpn.io/693612/p2.jpeg'"
-        :width="200"
-        :height="200"
-        :x="400"
-        :y="400"
-      />
+      </p-container>
     </p-application>
   </div>
 </template>
@@ -78,25 +33,13 @@
 import PApplication from '@/components/PApplication'
 import PContainer from '@/components/PContainer'
 import PSprite from '@/components/PSprite'
-import PText from '@/components/PText'
-import PGraphics from '@/components/PGraphics'
-import PAnimatedSprite from '@/components/PAnimatedSprite'
-import PBitmapText from '@/components/PBitmapText'
 import { Loader } from 'pixi.js'
-import PParticleContainer from '@/components/PParticleContainer'
-import PTilingSprite from '@/components/PTilingSprite'
 
 export default {
   components: {
     PApplication,
     PContainer,
-    PSprite,
-    PText,
-    PGraphics,
-    PAnimatedSprite,
-    PBitmapText,
-    PParticleContainer,
-    PTilingSprite
+    PSprite
   },
   data () {
     return {
@@ -106,7 +49,7 @@ export default {
       resolution: 1,
       sprites: [
         {
-          src: '/favicon.ico',
+          src: '/bunny.png',
           x: Math.floor(Math.random() * 800) + 1,
           y: Math.floor(Math.random() * 600) + 1
         }
@@ -128,7 +71,15 @@ export default {
         wordWrap: true,
         wordWrapWidth: 440
       },
-      shouldRenderBitmap: false
+      shouldRenderBitmap: false,
+      pivot: {
+        x: 100,
+        y: 200
+      },
+      scale: {
+        x: 2,
+        y: 1
+      }
     }
   },
   created () {
@@ -163,7 +114,7 @@ export default {
     },
     addSprite () {
       this.sprites.push({
-        src: '/favicon.ico',
+        src: '/bunny.png',
         x: Math.floor(Math.random() * 800) + 1,
         y: Math.floor(Math.random() * 600) + 1
       })

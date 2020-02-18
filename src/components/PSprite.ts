@@ -20,6 +20,7 @@ export default class PSprite extends mixins(PContainer) {
   get instance () {
     if (!this.pSprite) {
       this.pSprite = this.src ? Sprite.from(this.src) : new Sprite()
+      this.pSprite.anchor.set(this.anchorX, this.anchorY)
     }
     return this.pSprite
   }
@@ -30,12 +31,12 @@ export default class PSprite extends mixins(PContainer) {
 
   @Watch('anchorX')
   onAnchorXChange (newValue: number) {
-    this.instance.anchor.x = newValue
+    this.instance.anchor.set(newValue, this.anchorY)
   }
 
   @Watch('anchorY')
   onAnchorYChange (newValue: number) {
-    this.instance.anchor.y = newValue
+    this.instance.anchor.set(this.anchorY, newValue)
   }
 
   @Watch('blendMode')
