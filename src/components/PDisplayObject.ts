@@ -12,7 +12,6 @@ import { eventHandlers } from '../constants'
 @Component
 export default class PDisplayObject extends Vue {
   @Prop({ type: Array, default: () => { return [] } }) readonly events!: string[]
-  @Prop({ type: Boolean, default: false }) readonly enableTicker!: boolean
   @Prop({ type: Number, default: 1 }) readonly alpha!: number
   @Prop({ type: Number, default: 0 }) readonly angle!: number
   @Prop({ type: Boolean, default: false }) readonly buttonMode!: boolean
@@ -40,6 +39,7 @@ export default class PDisplayObject extends Vue {
   @Prop({ type: Number, default: 0 }) readonly y!: number
   @Prop({ type: Number, default: 0 }) readonly zIndex!: number
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Inject() readonly app: any
 
   public pDisplayObject: DisplayObject | undefined
@@ -76,12 +76,9 @@ export default class PDisplayObject extends Vue {
   }
 
   addToParent () {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { instance }: any = this.$parent
     instance.addChild(this.instance)
-
-    if (this.enableTicker) { // only enable ticker if need
-      this.app.instance.ticker.add((delta: number) => this.$emit('ticker', delta))
-    }
 
     this.$emit('ready', this.instance)
   }

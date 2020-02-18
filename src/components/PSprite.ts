@@ -9,9 +9,9 @@ import { mixins } from 'vue-class-component'
  */
 @Component
 export default class PSprite extends mixins(PContainer) {
-  @Prop({ default: 0 }) readonly anchorX!: number
-  @Prop({ default: 0 }) readonly anchorY!: number
-  @Prop({ default: 0 }) readonly blendMode!: number
+  @Prop({ type: Number, default: 0 }) readonly anchorX!: number
+  @Prop({ type: Number, default: 0 }) readonly anchorY!: number
+  @Prop({ type: Number, default: 0 }) readonly blendMode!: number
   @Prop() readonly tint!: number
   @Prop() readonly src!: string
 
@@ -21,8 +21,13 @@ export default class PSprite extends mixins(PContainer) {
     if (!this.pSprite) {
       this.pSprite = this.src ? Sprite.from(this.src) : new Sprite()
       this.pSprite.anchor.set(this.anchorX, this.anchorY)
-      this.pSprite.tint = this.tint
-      this.pSprite.blendMode = this.blendMode
+
+      if (this.tint) {
+        this.pSprite.tint = this.tint
+      }
+      if (this.blendMode) {
+        this.pSprite.blendMode = this.blendMode
+      }
     }
     return this.pSprite
   }

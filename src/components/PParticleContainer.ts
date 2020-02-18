@@ -1,4 +1,4 @@
-import { Component, Prop, Watch } from 'vue-property-decorator'
+import { Component, Prop } from 'vue-property-decorator'
 import { ParticleContainer } from 'pixi.js'
 import PContainer from './PContainer'
 import { mixins } from 'vue-class-component'
