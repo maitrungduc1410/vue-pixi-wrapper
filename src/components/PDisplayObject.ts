@@ -12,6 +12,7 @@ import { eventHandlers } from '../constants'
 @Component
 export default class PDisplayObject extends Vue {
   @Prop({ type: Array, default: () => { return [] } }) readonly events!: string[]
+  @Prop({ type: Boolean, default: false }) readonly enableTicker!: boolean
   @Prop({ type: Number, default: 1 }) readonly alpha!: number
   @Prop({ type: Number, default: 0 }) readonly angle!: number
   @Prop({ type: Boolean, default: false }) readonly buttonMode!: boolean
@@ -43,7 +44,7 @@ export default class PDisplayObject extends Vue {
 
   public pDisplayObject: DisplayObject | undefined
 
-  get instance () {
+  get instance () { // will be override by child
     if (!this.pDisplayObject) {
       this.pDisplayObject = new DisplayObject()
     }
@@ -77,6 +78,12 @@ export default class PDisplayObject extends Vue {
   addToParent () {
     const { instance }: any = this.$parent
     instance.addChild(this.instance)
+
+    if (this.enableTicker) { // only enable ticker if need
+      this.app.instance.ticker.add((delta: number) => this.$emit('ticker', delta))
+    }
+
+    this.$emit('ready', this.instance)
   }
 
   initProps () {
@@ -86,8 +93,12 @@ export default class PDisplayObject extends Vue {
     this.instance.cacheAsBitmap = this.cacheAsBitmap
     this.instance.cursor = this.cursor as string
     this.instance.interactive = this.interactive
+    this.instance.isMask = this.isMask
+    this.instance.isSprite = this.isSprite
     this.instance.pivot.x = this.pivotX
     this.instance.pivot.y = this.pivotY
+    this.instance.renderable = this.renderable
+    this.instance.rotation = this.rotation
     this.instance.scale.x = this.scaleX
     this.instance.scale.y = this.scaleY
     this.instance.skew.x = this.skewX
@@ -96,6 +107,8 @@ export default class PDisplayObject extends Vue {
     this.instance.x = this.x
     this.instance.y = this.y
     this.instance.zIndex = this.zIndex
+
+    // TODO: filterArea, filters, hitArea
   }
 
   initEvents () {
@@ -105,7 +118,7 @@ export default class PDisplayObject extends Vue {
       if (index === -1) {
         console.error(`[Even listener error]: There's no event listener for event name '${event}'`)
       } else {
-        this.instance.on(event, () => this.$emit(event))
+        this.instance.on(event, () => this.$emit(`on${event}`))
       }
     }
   }
@@ -115,9 +128,39 @@ export default class PDisplayObject extends Vue {
     this.instance.alpha = newValue
   }
 
+  @Watch('angle')
+  onAngleChange (newValue: number) {
+    this.instance.angle = newValue
+  }
+
+  @Watch('buttonMode')
+  onButtonModeChange (newValue: boolean) {
+    this.instance.buttonMode = newValue
+  }
+
+  // @Watch('cacheAsBitmap')
+  // onCacheAsBitmapChange (newValue: boolean) {
+  //   this.instance.cacheAsBitmap = newValue
+  // }
+
   @Watch('cursor')
   onCursorChange (newValue: string) {
     this.instance.cursor = newValue
+  }
+
+  @Watch('interactive')
+  onInteractiveChange (newValue: boolean) {
+    this.instance.interactive = newValue
+  }
+
+  @Watch('isMask')
+  onIsMaskChange (newValue: boolean) {
+    this.instance.isMask = newValue
+  }
+
+  @Watch('isSprite')
+  onIsSpriteChange (newValue: boolean) {
+    this.instance.isSprite = newValue
   }
 
   @Watch('pivotX')
@@ -128,6 +171,11 @@ export default class PDisplayObject extends Vue {
   @Watch('pivotY')
   onPivotYChange (newValue: number) {
     this.instance.pivot.y = newValue
+  }
+
+  @Watch('renderable')
+  onRenderableChange (newValue: boolean) {
+    this.instance.renderable = newValue
   }
 
   @Watch('rotation')
@@ -170,8 +218,10 @@ export default class PDisplayObject extends Vue {
     this.instance.y = newValue
   }
 
-  @Watch('interactive')
-  onInteractiveChange (newValue: boolean) {
-    this.instance.interactive = newValue
+  @Watch('zIndex')
+  onZIndexChange (newValue: number) {
+    this.instance.zIndex = newValue
   }
+
+  // TODO: watch on events change
 }

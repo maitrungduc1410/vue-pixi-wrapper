@@ -11,8 +11,8 @@ import { mixins } from 'vue-class-component'
  */
 @Component
 export default class PContainer extends mixins(DisplayObject) {
-  @Prop({ default: 0 }) readonly width!: number
-  @Prop({ default: 0 }) readonly height!: number
+  @Prop({ type: Number }) readonly width?: number
+  @Prop({ type: Number }) readonly height?: number
   @Prop({ default: true }) readonly interactiveChildren!: boolean
 
   public pContainer: Container | undefined
@@ -24,9 +24,15 @@ export default class PContainer extends mixins(DisplayObject) {
   get instance () {
     if (!this.pContainer) {
       this.pContainer = new Container()
-      this.pContainer.width = this.width
-      this.pContainer.height = this.height
       this.pContainer.interactiveChildren = this.interactiveChildren
+
+      if (this.width) {
+        this.pContainer.width = this.width
+      }
+
+      if (this.height) {
+        this.pContainer.height = this.height
+      }
     }
 
     return this.pContainer

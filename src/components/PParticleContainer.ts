@@ -31,9 +31,4 @@ export default class PParticleContainer extends mixins(PContainer) {
     }
     return this.pParticleContainer
   }
-
-  @Watch('autoResize')
-  onAutoResizeChange (newValue: boolean) {
-    this.instance.autoResize = newValue
-  }
 }

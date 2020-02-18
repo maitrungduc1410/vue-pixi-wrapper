@@ -9,9 +9,13 @@
         :x="400"
         :y="300"
         :interactive="true"
-        :pivotX="pivot.x"
-        :pivotY="pivot.y"
+        :pivotX="186 / 2"
+        :pivotY="197 / 2"
         :events="['click']"
+        @ticker="ticker"
+        :rotation="rotation"
+        @onclick="onClickContainer"
+        @ready="ready"
       >
         <p-sprite
           v-for="n in 25"
@@ -21,8 +25,6 @@
           :y="Math.floor((n - 1) / 5) * 40"
           :anchorX="0.5"
           :anchorY="0.5"
-          :scaleX="scale.x"
-          :scaleY="scale.y"
         />
       </p-container>
     </p-application>
@@ -79,7 +81,9 @@ export default {
       scale: {
         x: 2,
         y: 1
-      }
+      },
+      rotation: 0,
+      container: null
     }
   },
   created () {
@@ -88,18 +92,6 @@ export default {
       .load(this.onAssetsLoaded)
   },
   methods: {
-    scaleObject (container) {
-      container.scale.x *= 1.25
-      container.scale.y *= 1.25
-      console.log(123)
-    },
-
-    tickInfo (container, delta) {
-      console.log(`Tick delta: ${delta}`)
-    },
-    ready () {
-      console.log('READY')
-    },
     changeWidth () {
       this.width = 400
     },
@@ -157,6 +149,26 @@ export default {
     },
     changeText () {
       this.text = Date.now().toString()
+    },
+    ticker (delta) {
+      // console.log(delta)
+      this.rotation -= 0.01 * delta
+    },
+    onClickContainer () {
+      console.log('CLICK')
+    },
+    ready (container) {
+      console.log(container.width)
+
+      this.container = container
+    }
+  },
+  computed: {
+    containerWidth () {
+      return this.container ? this.container.width : 0
+    },
+    containerHeight () {
+      return this.container ? this.container.height : 0
     }
   }
 }
