@@ -24,6 +24,7 @@ interface IApplication {
 export default class PApplication extends Vue {
   @Prop({ type: String, default: 'canvas' }) readonly canvasId!: string
   @Prop({ type: Boolean, default: false }) readonly skipHello!: boolean
+  @Prop({ type: Boolean, default: false }) readonly enableTicker!: boolean
 
   @Prop({ type: Boolean, default: true }) readonly autoStart?: boolean
   @Prop({ type: Number, default: 800 }) readonly width!: number
@@ -81,6 +82,11 @@ export default class PApplication extends Vue {
 
     this.application.isReady = true
     this.application.EventBus.$emit('ready')
+    this.$emit('ready', this.application.instance)
+
+    if (this.enableTicker) { // only enable ticker if need
+      this.application.instance.ticker.add((delta: number) => this.$emit('ticker', delta))
+    }
   }
 
   @Watch('width')

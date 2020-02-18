@@ -21,6 +21,8 @@ export default class PSprite extends mixins(PContainer) {
     if (!this.pSprite) {
       this.pSprite = this.src ? Sprite.from(this.src) : new Sprite()
       this.pSprite.anchor.set(this.anchorX, this.anchorY)
+      this.pSprite.tint = this.tint
+      this.pSprite.blendMode = this.blendMode
     }
     return this.pSprite
   }
