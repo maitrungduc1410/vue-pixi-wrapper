@@ -13,6 +13,7 @@
 * [Bitmap Text](__docs__/components/bitmap-text.md)
 * [Particle Container](__docs__/components/particle-container.md)
 * [Tiling Sprite](__docs__/components/tiling-sprite.md)
+* [Simple Rope](components/simple-rope.md)
 * [FAQ](__docs__/components/faq.md)
 
 ## Examples
