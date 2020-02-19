@@ -4,11 +4,11 @@
 
 ![Vue-pixi-wrapper](.gitbook/assets/group-1.png)
 
-## About
+### About
 
 Vue PIXI Wrapper is a wrapper library to create PIXI application using VueJS with all components are reactive \(auto re-render when data change\)
 
-## Installation
+### Installation
 
 ```text
 yarn install vue-pixi-wrapper
@@ -19,9 +19,12 @@ or
 ```text
 npm install --save vue-pixi-wrapper
 ```
-# Documentation
-Check our website: https://maitrungduc.gitbook.io/vue-pixi-wrapper
 
-# ❤️Support
+## Documentation
+
+Check our website: [https://maitrungduc.gitbook.io/vue-pixi-wrapper](https://maitrungduc.gitbook.io/vue-pixi-wrapper)
+
+## ❤️Support
+
 If this project is helpful, please give me a star on [Github](https://github.com/maitrungduc1410/vue-pixi-wrapper)
 
