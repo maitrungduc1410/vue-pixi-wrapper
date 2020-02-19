@@ -7,6 +7,7 @@ import {
   Provide
 } from 'vue-property-decorator'
 import { Application, utils } from 'pixi.js'
+import { eventHandlers } from '../constants'
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface IApplication {
@@ -40,6 +41,9 @@ export default class PApplication extends Vue {
   @Prop({ type: Boolean, default: false }) readonly forceFXAA?: boolean
   @Prop({ type: String }) readonly powerPreference?: string
   @Prop({ type: Boolean, default: false }) readonly sharedLoader?: string
+
+  @Prop({ type: Boolean }) readonly interactive?: boolean
+  @Prop({ type: Array, default: () => { return [] } }) readonly events!: string[]
   // @Prop({ type: Window | HTMLElement, default: '' }) readonly resizeTo?: Window | HTMLElement
 
   public application: IApplication = {
@@ -66,6 +70,12 @@ export default class PApplication extends Vue {
     }, this.$slots.default)
   }
 
+  beforeDestroy () {
+    this.instance.removeAllListeners() // remove all event listeners
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.application.instance!.destroy(true)
+  }
+
   created () {
     if (this.skipHello) {
       utils.skipHello()
@@ -81,11 +91,32 @@ export default class PApplication extends Vue {
     })
 
     this.application.isReady = true
+    this.initProps()
+    this.initEvents()
+
     this.application.EventBus.$emit('ready')
     this.$emit('ready', this.application.instance)
 
     if (this.enableTicker) { // only enable ticker if need
       this.application.instance.ticker.add((delta: number) => this.$emit('ticker', delta))
+    }
+  }
+
+  initProps () {
+    if (this.interactive) {
+      this.instance.interactive = this.interactive
+    }
+  }
+
+  initEvents () {
+    for (const event of this.events) {
+      const index = eventHandlers.findIndex(item => item === event)
+
+      if (index === -1) {
+        console.error(`[Even listener error]: There's no event listener for event name '${event}'`)
+      } else {
+        this.instance.on(event, (e: Event) => this.$emit(`on${event}`, e))
+      }
     }
   }
 

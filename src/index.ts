@@ -7,6 +7,7 @@ import PParticleContainer from './components/PParticleContainer'
 import PSprite from './components/PSprite'
 import PText from './components/PText'
 import PTilingSprite from './components/PTilingSprite'
+import PSimpleRope from './components/PSimpleRope'
 
 export {
   PAnimatedSprite,
@@ -17,5 +18,6 @@ export {
   PParticleContainer,
   PSprite,
   PText,
-  PTilingSprite
+  PTilingSprite,
+  PSimpleRope
 }

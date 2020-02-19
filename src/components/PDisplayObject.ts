@@ -12,20 +12,22 @@ import { eventHandlers } from '../constants'
 @Component
 export default class PDisplayObject extends Vue {
   @Prop({ type: Array, default: () => { return [] } }) readonly events!: string[]
+  @Prop({ type: Boolean, default: true }) readonly shouldRender!: boolean // sometimes you just want to create this object and don't want to render it on screen (Eg: use it as mask for other object)
+
   @Prop({ type: Number, default: 1 }) readonly alpha!: number
   @Prop({ type: Number, default: 0 }) readonly angle!: number
   @Prop({ type: Boolean, default: false }) readonly buttonMode!: boolean
   @Prop({ type: Boolean, default: false }) readonly cacheAsBitmap!: boolean
-  @Prop({ default: null }) readonly cursor!: 'help' | 'wait' | 'crosshair' | 'not-allowed' | 'zoom-in' | 'grab' | null
+  @Prop() readonly cursor!: 'help' | 'wait' | 'crosshair' | 'not-allowed' | 'zoom-in' | 'grab' | null
   @Prop({ default: null }) readonly filterArea!: Rectangle | null
-  @Prop({ default: null }) readonly filters!: Filter | null
+  @Prop() readonly filters!: Filter[]
   @Prop({ default: null }) readonly hitArea!: IHitArea | null
   @Prop({ type: Boolean, default: false }) readonly interactive!: boolean
   @Prop({ type: Boolean, default: false }) readonly isMask!: boolean
   @Prop({ type: Boolean, default: false }) readonly isSprite!: boolean
   // @Prop({ default: null }) readonly localTransform!: Matrix
   @Prop({ default: null }) readonly mask!: Container | MaskData
-  @Prop({ default: null }) readonly name!: string | null
+  @Prop() readonly name!: string | null
   @Prop({ type: Number, default: 0 }) readonly pivotX!: number
   @Prop({ type: Number, default: 0 }) readonly pivotY!: number
   @Prop({ type: Boolean, default: true }) readonly renderable!: boolean
@@ -70,16 +72,17 @@ export default class PDisplayObject extends Vue {
     if (this.app.isReady) {
       this.addToParent()
     }
-
-    this.initProps()
-    this.initEvents()
   }
 
   addToParent () {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { instance }: any = this.$parent
-    instance.addChild(this.instance)
+    if (this.shouldRender) {
+      const { instance }: any = this.$parent
+      instance.addChild(this.instance)
+    }
 
+    this.initProps()
+    this.initEvents()
     this.$emit('ready', this.instance)
   }
 
@@ -88,7 +91,11 @@ export default class PDisplayObject extends Vue {
     this.instance.angle = this.angle
     this.instance.buttonMode = this.buttonMode
     this.instance.cacheAsBitmap = this.cacheAsBitmap
-    this.instance.cursor = this.cursor as string
+
+    if (this.cursor) {
+      this.instance.cursor = this.cursor
+    }
+
     this.instance.interactive = this.interactive
     this.instance.isMask = this.isMask
     this.instance.isSprite = this.isSprite
@@ -105,6 +112,18 @@ export default class PDisplayObject extends Vue {
     this.instance.y = this.y
     this.instance.zIndex = this.zIndex
 
+    if (this.name) {
+      this.instance.name = this.name
+    }
+
+    if (this.filters) {
+      this.instance.filters = this.filters
+    }
+
+    if (this.mask) {
+      this.instance.mask = this.mask
+    }
+
     // TODO: filterArea, filters, hitArea
   }
 
@@ -115,7 +134,7 @@ export default class PDisplayObject extends Vue {
       if (index === -1) {
         console.error(`[Even listener error]: There's no event listener for event name '${event}'`)
       } else {
-        this.instance.on(event, () => this.$emit(`on${event}`))
+        this.instance.on(event, (e: Event) => this.$emit(`on${event}`, e))
       }
     }
   }
@@ -158,6 +177,11 @@ export default class PDisplayObject extends Vue {
   @Watch('isSprite')
   onIsSpriteChange (newValue: boolean) {
     this.instance.isSprite = newValue
+  }
+
+  @Watch('mask')
+  onMaskChange (newValue: Container) {
+    this.instance.mask = newValue
   }
 
   @Watch('pivotX')

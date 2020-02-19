@@ -28,5 +28,6 @@ export default class PGraphics extends mixins(PContainer) {
     const g = this.pGraphics as Graphics
     g.clear()
     this.draw.call(g, g)
+    this.$emit('onUpdate', g)
   }
 }

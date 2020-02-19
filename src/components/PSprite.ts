@@ -1,5 +1,5 @@
 import { Component, Prop, Watch } from 'vue-property-decorator'
-import { Sprite } from 'pixi.js'
+import { Sprite, Texture } from 'pixi.js'
 import PContainer from './PContainer'
 import { mixins } from 'vue-class-component'
 
@@ -14,12 +14,18 @@ export default class PSprite extends mixins(PContainer) {
   @Prop({ type: Number, default: 0 }) readonly blendMode!: number
   @Prop() readonly tint!: number
   @Prop() readonly src!: string
+  @Prop() readonly texture!: Texture
 
   public pSprite: Sprite | undefined
 
   get instance () {
     if (!this.pSprite) {
-      this.pSprite = this.src ? Sprite.from(this.src) : new Sprite()
+      if (this.texture) {
+        this.pSprite = new Sprite(this.texture)
+      } else {
+        this.pSprite = this.src ? Sprite.from(this.src) : new Sprite()
+      }
+
       this.pSprite.anchor.set(this.anchorX, this.anchorY)
 
       if (this.tint) {
@@ -54,6 +60,11 @@ export default class PSprite extends mixins(PContainer) {
   @Watch('tint')
   onTintChange (newValue: number) {
     this.instance.tint = newValue
+  }
+
+  @Watch('texture')
+  onTextureChange (newValue: Texture) {
+    this.instance.texture = newValue
   }
 
   // TODO

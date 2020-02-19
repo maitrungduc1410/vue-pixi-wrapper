@@ -24,18 +24,25 @@ export default class PContainer extends mixins(DisplayObject) {
   get instance () {
     if (!this.pContainer) {
       this.pContainer = new Container()
-      this.pContainer.interactiveChildren = this.interactiveChildren
-
-      if (this.width) {
-        this.pContainer.width = this.width
-      }
-
-      if (this.height) {
-        this.pContainer.height = this.height
-      }
     }
 
     return this.pContainer
+  }
+
+  created () {
+    this.initProps()
+  }
+
+  initProps () {
+    this.instance.interactiveChildren = this.interactiveChildren
+
+    if (this.width) {
+      this.instance.width = this.width
+    }
+
+    if (this.height) {
+      this.instance.height = this.height
+    }
   }
 
   @Watch('width')
