@@ -4,21 +4,26 @@
 
 ## Components
 
-* [Application](__docs__/application.md)
-* [Container](__docs__/container.md)
-* [Sprite](__docs__/sprite.md)
-* [Text](__docs__/text.md)
-* [Graphics](__docs__/graphics.md)
-* [Animated Sprite](__docs__/animated-sprite.md)
-* [Bitmap Text](__docs__/bitmap-text.md)
-* [Particle Container](__docs__/particle-container.md)
-* [Tiling Sprite](__docs__/tiling-sprite.md)
-* [FAQ](__docs__/faq.md)
+* [Application](components/application.md)
+* [Container](components/container.md)
+* [Sprite](components/sprite.md)
+* [Text](components/text.md)
+* [Graphics](components/graphics.md)
+* [Animated Sprite](components/animated-sprite.md)
+* [Bitmap Text](components/bitmap-text.md)
+* [Particle Container](components/particle-container.md)
+* [Tiling Sprite](components/tiling-sprite.md)
+* [FAQ](components/faq.md)
 
 ## Examples
 
-* [DEMO-BASIC](examples/demo-basic/README.md)
-  * [Container](examples/demo-basic/container.md)
-  * [Transparent Background](examples/demo-basic/transparent-background.md)
-  * [Tinting](examples/demo-basic/tinting.md)
+* [DEMOS-BASIC](examples/demos-basic/README.md)
+  * [Container](examples/demos-basic/container.md)
+  * [Transparent Background](examples/demos-basic/transparent-background.md)
+  * [Tinting](examples/demos-basic/tinting.md)
+* [DEMOS-ADVANCED](examples/demos-advanced/README.md)
+  * [Slots](examples/demos-advanced/slots.md)
+  * [Scratchcard](examples/demos-advanced/scratchcard.md)
+  * [Mouse Trail](examples/demos-advanced/mouse-trail.md)
+  * [Star Warp](examples/demos-advanced/star-warp.md)
 
