@@ -30,7 +30,7 @@ export default class PContainer extends mixins(DisplayObject) {
   }
 
   created () {
-    this.initProps()
+    if (this.instance) this.initProps()
   }
 
   initProps () {

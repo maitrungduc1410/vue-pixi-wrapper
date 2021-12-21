@@ -24,8 +24,8 @@ export default class PAnimatedSprite extends mixins(PSprite) {
     }
   }
 
-  get instance () {
-    if (!this.pAnimatedSprite) {
+  get instance (): any {
+    if (!this.pAnimatedSprite && this.textureArray.length) {
       this.pAnimatedSprite = new AnimatedSprite(this.textureArray)
       this.pAnimatedSprite.gotoAndPlay(this.initialFrame as number)
       this.pAnimatedSprite.animationSpeed = this.animationSpeed as number
