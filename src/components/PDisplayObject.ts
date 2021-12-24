@@ -7,7 +7,8 @@ import {
   MaskData
 } from 'pixi.js'
 import { Vue, Prop, Watch, Component, Inject } from 'vue-property-decorator'
-import { eventHandlers } from '../constants'
+import { eventHandlers, READY_EVENT } from '../constants'
+import { IApplication } from './PApplication'
 
 @Component
 export default class PDisplayObject extends Vue {
@@ -27,7 +28,7 @@ export default class PDisplayObject extends Vue {
   @Prop({ type: Boolean, default: false }) readonly isSprite!: boolean
   // @Prop({ default: null }) readonly localTransform!: Matrix
   @Prop({ default: null }) readonly mask!: Container | MaskData
-  @Prop() readonly name!: string | null
+  @Prop({ type: String }) readonly name!: string | null
   @Prop({ type: Number, default: 0 }) readonly pivotX!: number
   @Prop({ type: Number, default: 0 }) readonly pivotY!: number
   @Prop({ type: Boolean, default: true }) readonly renderable!: boolean
@@ -42,31 +43,28 @@ export default class PDisplayObject extends Vue {
   @Prop({ type: Number, default: 0 }) readonly zIndex!: number
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  @Inject() readonly app: any
+  @Inject({ default: null }) readonly app!: IApplication
 
-  public pDisplayObject: DisplayObject | undefined
+  pDisplayObject!: DisplayObject
 
-  get instance () { // will be override by child
-    if (!this.pDisplayObject) {
-      this.pDisplayObject = new DisplayObject()
-    }
+  get instance (): DisplayObject { // will be override by child
     return this.pDisplayObject
   }
 
-  beforeDestroy () {
-    this.instance.removeAllListeners() // remove all event listeners
-    this.instance.parent.removeChild(this.instance)
+  beforeDestroy (): void {
+    this.pDisplayObject && this.pDisplayObject.destroy()
   }
 
-  created () {
+  created (): void {
     if (!this.app) {
-      console.error(`[RENDER ERROR]: You're trying to render component ${this.instance.constructor.name} outside of Application. All display objects (Container, Sprite,...) must be rendered within Application`)
+      console.error('[RENDER ERROR]: You\'re trying to render component DisplayObject outside of a PIXI Application. All display objects (Container, Sprite,...) must be rendered within Application')
+      this.$destroy()
       return
     }
 
-    this.app.EventBus.$on('ready', () => {
+    this.app.EventBus.$on(READY_EVENT, () => {
       this.addToParent()
-      this.app.EventBus.$off('ready') // remove this event listener as it may conflict with user's provide event
+      this.app.EventBus.$off(READY_EVENT) // remove this event listener as it may conflict with user's provide event
     })
 
     if (this.app.isReady) {
@@ -74,9 +72,10 @@ export default class PDisplayObject extends Vue {
     }
   }
 
-  addToParent () {
+  addToParent (): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (this.shouldRender) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { instance }: any = this.$parent
       instance.addChild(this.instance)
     }
@@ -86,7 +85,13 @@ export default class PDisplayObject extends Vue {
     this.$emit('ready', this.instance)
   }
 
-  initProps () {
+  reinit (newVal: DisplayObject): void {
+    this.pDisplayObject && this.pDisplayObject.destroy()
+    this.pDisplayObject = newVal
+    this.addToParent()
+  }
+
+  private initProps () {
     this.instance.alpha = this.alpha
     this.instance.angle = this.angle
     this.instance.buttonMode = this.buttonMode
@@ -127,7 +132,7 @@ export default class PDisplayObject extends Vue {
     // TODO: filterArea, filters, hitArea
   }
 
-  initEvents () {
+  initEvents (): void {
     for (const event of this.events) {
       const index = eventHandlers.findIndex(item => item === event)
 
@@ -140,107 +145,107 @@ export default class PDisplayObject extends Vue {
   }
 
   @Watch('alpha')
-  onAlphaChange (newValue: number) {
+  onAlphaChange (newValue: number): void {
     this.instance.alpha = newValue
   }
 
   @Watch('angle')
-  onAngleChange (newValue: number) {
+  onAngleChange (newValue: number): void {
     this.instance.angle = newValue
   }
 
   @Watch('buttonMode')
-  onButtonModeChange (newValue: boolean) {
+  onButtonModeChange (newValue: boolean): void {
     this.instance.buttonMode = newValue
   }
 
   // @Watch('cacheAsBitmap')
-  // onCacheAsBitmapChange (newValue: boolean) {
+  // onCacheAsBitmapChange (newValue: boolean): void {
   //   this.instance.cacheAsBitmap = newValue
   // }
 
   @Watch('cursor')
-  onCursorChange (newValue: string) {
+  onCursorChange (newValue: string): void {
     this.instance.cursor = newValue
   }
 
   @Watch('interactive')
-  onInteractiveChange (newValue: boolean) {
+  onInteractiveChange (newValue: boolean): void {
     this.instance.interactive = newValue
   }
 
   @Watch('isMask')
-  onIsMaskChange (newValue: boolean) {
+  onIsMaskChange (newValue: boolean): void {
     this.instance.isMask = newValue
   }
 
   @Watch('isSprite')
-  onIsSpriteChange (newValue: boolean) {
+  onIsSpriteChange (newValue: boolean): void {
     this.instance.isSprite = newValue
   }
 
   @Watch('mask')
-  onMaskChange (newValue: Container) {
+  onMaskChange (newValue: Container): void {
     this.instance.mask = newValue
   }
 
   @Watch('pivotX')
-  onPivotXChange (newValue: number) {
+  onPivotXChange (newValue: number): void {
     this.instance.pivot.x = newValue
   }
 
   @Watch('pivotY')
-  onPivotYChange (newValue: number) {
+  onPivotYChange (newValue: number): void {
     this.instance.pivot.y = newValue
   }
 
   @Watch('renderable')
-  onRenderableChange (newValue: boolean) {
+  onRenderableChange (newValue: boolean): void {
     this.instance.renderable = newValue
   }
 
   @Watch('rotation')
-  onRotationChange (newValue: number) {
+  onRotationChange (newValue: number): void {
     this.instance.rotation = newValue
   }
 
   @Watch('scaleX')
-  onScaleXChange (newValue: number) {
+  onScaleXChange (newValue: number): void {
     this.instance.scale.x = newValue
   }
 
   @Watch('scaleY')
-  onScaleYChange (newValue: number) {
+  onScaleYChange (newValue: number): void {
     this.instance.scale.y = newValue
   }
 
   @Watch('skewX')
-  onSkewXChange (newValue: number) {
+  onSkewXChange (newValue: number): void {
     this.instance.skew.x = newValue
   }
 
   @Watch('skewY')
-  onSkewYChange (newValue: number) {
+  onSkewYChange (newValue: number): void {
     this.instance.scale.y = newValue
   }
 
   @Watch('visible')
-  onVisibleChange (newValue: boolean) {
+  onVisibleChange (newValue: boolean): void {
     this.instance.visible = newValue
   }
 
   @Watch('x')
-  onXChange (newValue: number) {
+  onXChange (newValue: number): void {
     this.instance.x = newValue
   }
 
   @Watch('y')
-  onYChange (newValue: number) {
+  onYChange (newValue: number): void {
     this.instance.y = newValue
   }
 
   @Watch('zIndex')
-  onZIndexChange (newValue: number) {
+  onZIndexChange (newValue: number): void {
     this.instance.zIndex = newValue
   }
 

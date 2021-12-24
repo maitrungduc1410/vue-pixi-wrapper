@@ -1,5 +1,5 @@
 import { Component, Prop, Watch } from 'vue-property-decorator'
-import { Text } from 'pixi.js'
+import { Text, TextStyle } from 'pixi.js'
 import PSprite from './PSprite'
 import { mixins } from 'vue-class-component'
 
@@ -9,20 +9,33 @@ import { mixins } from 'vue-class-component'
  */
 @Component
 export default class PText extends mixins(PSprite) {
-  @Prop() readonly text!: string
-  @Prop() readonly textStyle?: object
-  @Prop() readonly canvas?: HTMLCanvasElement
-  public pText: Text | undefined
+  @Prop({ type: String }) readonly text!: string
+  @Prop({
+    type: Object,
+    validator: value => value instanceof TextStyle
+  }) readonly textStyle?: TextStyle
 
-  get instance () {
-    if (!this.pText) {
-      this.pText = new Text(this.text, this.textStyle, this.canvas)
+  @Prop({
+    type: Object,
+    validator: value => value instanceof HTMLCanvasElement
+  }) readonly canvas?: HTMLCanvasElement
+
+  declare pDisplayObject: Text
+
+  override get instance (): Text {
+    if (!this.pDisplayObject) {
+      this.pDisplayObject = new Text(this.text, this.textStyle, this.canvas)
     }
-    return this.pText
+    return this.pDisplayObject
   }
 
   @Watch('text')
-  onTextChange (newValue: string) {
-    this.instance.text = newValue
+  onTextChange (newValue: string): void {
+    this.pDisplayObject.text = newValue
+  }
+
+  @Watch('textStyle')
+  onTextStyleChange (newValue: TextStyle): void {
+    this.pDisplayObject.style = newValue
   }
 }

@@ -28,3 +28,5 @@ export const eventHandlers = [
   'touchmove',
   'touchstart'
 ]
+
+export const READY_EVENT = '__P_READY_EVENT__'

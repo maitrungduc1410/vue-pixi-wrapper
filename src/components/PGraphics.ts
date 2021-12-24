@@ -12,20 +12,20 @@ export default class PGraphics extends mixins(PContainer) {
   @Prop({ type: Function, required: true }) readonly draw!: (g: Graphics) => void
   @Prop({ type: Array }) readonly reactiveData!: string[] // data that should be watched to re-render graphics
 
-  public pGraphics: Graphics | undefined
+  declare pDisplayObject: Graphics
 
-  get instance () {
-    if (!this.pGraphics) {
-      this.pGraphics = new Graphics()
-      this.draw.call(this.pGraphics, this.pGraphics)
+  override get instance (): Graphics {
+    if (!this.pDisplayObject) {
+      this.pDisplayObject = new Graphics()
+      this.draw.call(this.pDisplayObject, this.pDisplayObject)
     }
 
-    return this.pGraphics
+    return this.pDisplayObject
   }
 
   @Watch('reactiveData')
-  onReactiveDataChange () {
-    const g = this.pGraphics as Graphics
+  onReactiveDataChange (): void {
+    const g = this.pDisplayObject as Graphics
     g.clear()
     this.draw.call(g, g)
     this.$emit('onUpdate', g)

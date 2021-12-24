@@ -12,65 +12,62 @@ export default class PSprite extends mixins(PContainer) {
   @Prop({ type: Number, default: 0 }) readonly anchorX!: number
   @Prop({ type: Number, default: 0 }) readonly anchorY!: number
   @Prop({ type: Number, default: 0 }) readonly blendMode!: number
-  @Prop() readonly tint!: number
-  @Prop() readonly src!: string
-  @Prop() readonly texture!: Texture
+  @Prop({ type: Number }) readonly tint!: number
+  @Prop({ type: String }) readonly src!: string
+  @Prop({
+    type: Object,
+    validator: value => value instanceof Texture
+  }) readonly texture!: Texture
 
-  public pSprite: Sprite | undefined
+  declare pDisplayObject: Sprite
 
-  get instance () {
-    if (!this.pSprite) {
+  override get instance (): Sprite {
+    if (!this.pDisplayObject) {
       if (this.texture) {
-        this.pSprite = new Sprite(this.texture)
+        this.pDisplayObject = new Sprite(this.texture)
       } else {
-        this.pSprite = this.src ? Sprite.from(this.src) : new Sprite()
+        this.pDisplayObject = this.src ? Sprite.from(this.src) : new Sprite()
       }
 
-      this.pSprite.anchor.set(this.anchorX, this.anchorY)
+      this.pDisplayObject.anchor.set(this.anchorX, this.anchorY)
 
       if (this.tint) {
-        this.pSprite.tint = this.tint
+        this.pDisplayObject.tint = this.tint
       }
       if (this.blendMode) {
-        this.pSprite.blendMode = this.blendMode
+        this.pDisplayObject.blendMode = this.blendMode
       }
     }
-    return this.pSprite
+    return this.pDisplayObject
   }
 
-  // set instance (newSrc: any) {
-  //   newSrc ? Sprite.from(newSrc) : new Sprite()
-  // }
-
   @Watch('anchorX')
-  onAnchorXChange (newValue: number) {
-    this.instance.anchor.set(newValue, this.anchorY)
+  onAnchorXChange (newValue: number): void {
+    this.pDisplayObject.anchor.set(newValue, this.anchorY)
   }
 
   @Watch('anchorY')
-  onAnchorYChange (newValue: number) {
-    this.instance.anchor.set(this.anchorY, newValue)
+  onAnchorYChange (newValue: number): void {
+    this.pDisplayObject.anchor.set(this.anchorY, newValue)
   }
 
   @Watch('blendMode')
-  onBlendModeChange (newValue: number) {
-    this.instance.blendMode = newValue
+  onBlendModeChange (newValue: number): void {
+    this.pDisplayObject.blendMode = newValue
   }
 
   @Watch('tint')
-  onTintChange (newValue: number) {
-    this.instance.tint = newValue
+  onTintChange (newValue: number): void {
+    this.pDisplayObject.tint = newValue
   }
 
   @Watch('texture')
-  onTextureChange (newValue: Texture) {
-    this.instance.texture = newValue
+  onTextureChange (newValue: Texture): void {
+    this.pDisplayObject.texture = newValue
   }
 
-  // TODO
-  // @Watch('src')
-  // onSrcChange (newValue: string) {
-  //   this.instance = newValue ? Sprite.from(newValue) : new Sprite()
-  //   const text = new Sprite()
-  // }
+  @Watch('src')
+  onSrcChange (newValue: string): void {
+    this.pDisplayObject.texture = Texture.from(newValue)
+  }
 }

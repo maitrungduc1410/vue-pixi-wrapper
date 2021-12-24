@@ -1,44 +1,52 @@
 import { Component, Prop, Watch } from 'vue-property-decorator'
-import { SimpleRope, Texture, Point } from 'pixi.js'
-import PContainer from './PContainer'
+import { SimpleRope, Texture, Point, Geometry, MeshMaterial } from 'pixi.js'
 import { mixins } from 'vue-class-component'
+import PMesh from './PMesh'
 
 /**
  * The rope allows you to draw a texture across several points and then manipulate these points
  *
  */
 @Component
-export default class PSimpleRope extends mixins(PContainer) {
-  @Prop() readonly texture!: Texture
-  @Prop({ type: String }) readonly src!: string
+export default class PSimpleRope extends mixins(PMesh) {
+  @Prop({
+    type: Object,
+    validator: value => value instanceof Texture
+  }) readonly texture?: Texture
+
+  @Prop({ type: String }) readonly src?: string
   @Prop({ required: true }) readonly points!: Point[]
   @Prop({ type: Number, default: 0 }) readonly textureScale!: number
-  @Prop({ type: Number, default: 0 }) readonly blendMode!: number
 
-  public pSimpleRope: SimpleRope | undefined
+  //  override these required props from PMesh
+  @Prop({
+    type: Object,
+    validator: value => value instanceof Geometry
+  }) declare readonly geometry: Geometry
 
-  get instance () {
+  @Prop({
+    type: Object,
+    validator: value => value instanceof MeshMaterial
+  }) declare readonly shader: MeshMaterial
+
+  declare pDisplayObject: SimpleRope
+
+  override get instance (): SimpleRope {
     if (this.texture) {
-      this.pSimpleRope = new SimpleRope(this.texture, this.points, this.textureScale)
-    } else {
-      this.pSimpleRope = new SimpleRope(Texture.from(this.src), this.points, this.textureScale)
+      this.pDisplayObject = new SimpleRope(this.texture, this.points, this.textureScale)
+    } else if (this.src) {
+      this.pDisplayObject = new SimpleRope(Texture.from(this.src), this.points, this.textureScale)
     }
-    return this.pSimpleRope
-  }
-
-  created () {
-    if (this.blendMode) {
-      this.instance.blendMode = this.blendMode
-    }
+    return this.pDisplayObject
   }
 
   @Watch('texture')
-  onTextureChange (newValue: Texture) {
-    this.instance.texture = newValue
+  onTextureChange (newValue: Texture): void {
+    this.pDisplayObject.texture = newValue
   }
 
   @Watch('src')
-  onSrcChange (newValue: string) {
-    this.instance.texture = Texture.from(newValue)
+  onSrcChange (newValue: string): void {
+    this.pDisplayObject.texture = Texture.from(newValue)
   }
 }

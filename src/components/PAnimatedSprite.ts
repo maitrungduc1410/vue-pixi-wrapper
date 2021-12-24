@@ -15,28 +15,28 @@ export default class PAnimatedSprite extends mixins(PSprite) {
   @Prop({ type: Number, default: 0 }) readonly initialFrame?: number
 
   public textureArray: Texture[] = []
-  public pAnimatedSprite: AnimatedSprite | undefined
+  declare pDisplayObject: AnimatedSprite
 
-  created () {
+  override created (): void {
     for (const image of this.images) {
       const texture = Texture.from(image)
       this.textureArray.push(texture)
     }
   }
 
-  get instance (): any {
-    if (!this.pAnimatedSprite && this.textureArray.length) {
-      this.pAnimatedSprite = new AnimatedSprite(this.textureArray)
-      this.pAnimatedSprite.gotoAndPlay(this.initialFrame as number)
-      this.pAnimatedSprite.animationSpeed = this.animationSpeed as number
+  override get instance (): AnimatedSprite {
+    if (!this.pDisplayObject && this.textureArray.length) {
+      this.pDisplayObject = new AnimatedSprite(this.textureArray)
+      this.pDisplayObject.gotoAndPlay(this.initialFrame as number)
+      this.pDisplayObject.animationSpeed = this.animationSpeed as number
     }
 
-    return this.pAnimatedSprite
+    return this.pDisplayObject
   }
 
   @Watch('animationSpeed')
-  onAnimationSpeedChange (newValue: number) {
-    this.instance.animationSpeed = newValue
+  onAnimationSpeedChange (newValue: number): void {
+    this.pDisplayObject.animationSpeed = newValue
   }
 
   // TODO: watch on images changes

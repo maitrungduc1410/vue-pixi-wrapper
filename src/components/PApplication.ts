@@ -6,11 +6,10 @@ import {
   Watch,
   Provide
 } from 'vue-property-decorator'
-import { Application, utils } from 'pixi.js'
-import { eventHandlers } from '../constants'
+import { AbstractRenderer, Application, Container, Renderer, utils } from 'pixi.js'
+import { eventHandlers, READY_EVENT } from '../constants'
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
-interface IApplication {
+export interface IApplication {
   instance: Application | null;
   EventBus: Vue;
   isReady: boolean;
@@ -30,13 +29,13 @@ export default class PApplication extends Vue {
   @Prop({ type: Boolean, default: true }) readonly autoStart?: boolean
   @Prop({ type: Number, default: 800 }) readonly width!: number
   @Prop({ type: Number, default: 600 }) readonly height!: number
-  @Prop({ type: Boolean, default: false }) readonly transparent!: boolean
   @Prop({ type: Boolean, default: false }) readonly autoDensity?: boolean
   @Prop({ type: Boolean, default: false }) readonly antialias?: boolean
   @Prop({ type: Boolean, default: false }) readonly preserveDrawingBuffer?: boolean
   @Prop({ type: Number, default: 1 }) readonly resolution!: number
   @Prop({ type: Boolean, default: true }) readonly forceCanvas?: boolean
   @Prop({ type: Number, default: 0x000000 }) readonly backgroundColor!: number
+  @Prop({ type: Number, default: 1 }) readonly backgroundAlpha!: number
   @Prop({ type: Boolean, default: true }) readonly clearBeforeRender?: boolean
   @Prop({ type: Boolean, default: false }) readonly forceFXAA?: boolean
   @Prop({ type: String }) readonly powerPreference?: string
@@ -54,11 +53,11 @@ export default class PApplication extends Vue {
 
   @Provide() app = this.application
 
-  get instance () {
+  get instance (): Container {
     return (this.application.instance as Application).stage
   }
 
-  get renderer () {
+  get renderer (): Renderer | AbstractRenderer {
     return (this.application.instance as Application).renderer
   }
 
@@ -70,19 +69,19 @@ export default class PApplication extends Vue {
     }, this.$slots.default)
   }
 
-  beforeDestroy () {
+  beforeDestroy (): void {
     this.instance.removeAllListeners() // remove all event listeners
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.application.instance!.destroy(true)
   }
 
-  created () {
+  created (): void {
     if (this.skipHello) {
       utils.skipHello()
     }
   }
 
-  mounted () {
+  mounted (): void {
     const canvas = document.getElementById(this.canvasId) as HTMLCanvasElement
 
     this.application.instance = new Application({
@@ -94,21 +93,21 @@ export default class PApplication extends Vue {
     this.initProps()
     this.initEvents()
 
-    this.application.EventBus.$emit('ready')
     this.$emit('ready', this.application.instance)
+    this.application.EventBus.$emit(READY_EVENT)
 
     if (this.enableTicker) { // only enable ticker if need
       this.application.instance.ticker.add((delta: number) => this.$emit('ticker', delta))
     }
   }
 
-  initProps () {
+  initProps (): void {
     if (this.interactive) {
       this.instance.interactive = this.interactive
     }
   }
 
-  initEvents () {
+  initEvents (): void {
     for (const event of this.events) {
       const index = eventHandlers.findIndex(item => item === event)
 
@@ -121,27 +120,27 @@ export default class PApplication extends Vue {
   }
 
   @Watch('width')
-  onChangeWidth (val: number) {
+  onChangeWidth (val: number): void {
     this.renderer.resize(val, this.height)
   }
 
   @Watch('height')
-  onChangeHeight (val: number) {
+  onChangeHeight (val: number): void {
     this.renderer.resize(this.width, val)
   }
 
   @Watch('backgroundColor')
-  onChangeBackgroundColor (val: number) {
+  onChangeBackgroundColor (val: number): void {
     this.renderer.backgroundColor = val
   }
 
   @Watch('resolution')
-  onChangeResolution (val: number) {
+  onChangeResolution (val: number): void {
     this.renderer.resolution = val
   }
 
-  @Watch('transparent')
-  onChangeTransparent (val: boolean) {
-    this.renderer.transparent = val
+  @Watch('backgroundAlpha')
+  onChangeBackgroundAlpha (val: number): void {
+    this.renderer.backgroundAlpha = val
   }
 }

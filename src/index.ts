@@ -8,6 +8,9 @@ import PSprite from './components/PSprite'
 import PText from './components/PText'
 import PTilingSprite from './components/PTilingSprite'
 import PSimpleRope from './components/PSimpleRope'
+import PMesh from './components/PMesh'
+import PSimplePlane from './components/PSimplePlane'
+import PNineSlicePlane from './components/PNineSlicePlane'
 
 export {
   PAnimatedSprite,
@@ -19,5 +22,8 @@ export {
   PSprite,
   PText,
   PTilingSprite,
-  PSimpleRope
+  PSimpleRope,
+  PMesh,
+  PSimplePlane,
+  PNineSlicePlane
 }

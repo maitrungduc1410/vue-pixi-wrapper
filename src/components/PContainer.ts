@@ -13,50 +13,50 @@ import { mixins } from 'vue-class-component'
 export default class PContainer extends mixins(DisplayObject) {
   @Prop({ type: Number }) readonly width?: number
   @Prop({ type: Number }) readonly height?: number
-  @Prop({ default: true }) readonly interactiveChildren!: boolean
+  @Prop({ type: Boolean, default: true }) readonly interactiveChildren!: boolean
 
-  public pContainer: Container | undefined
+  declare pDisplayObject: Container
 
   render (h: CreateElement): VNode | undefined {
     return this.$slots.default ? h('template', this.$slots.default) : undefined
   }
 
-  get instance () {
-    if (!this.pContainer) {
-      this.pContainer = new Container()
+  override get instance (): Container {
+    if (!this.pDisplayObject) {
+      this.pDisplayObject = new Container()
     }
 
-    return this.pContainer
+    return this.pDisplayObject
   }
 
-  created () {
-    if (this.instance) this.initProps()
+  override created (): void {
+    if (this.pDisplayObject) this.initExtraProps()
   }
 
-  initProps () {
-    this.instance.interactiveChildren = this.interactiveChildren
+  initExtraProps (): void {
+    this.pDisplayObject.interactiveChildren = this.interactiveChildren
 
     if (this.width) {
-      this.instance.width = this.width
+      this.pDisplayObject.width = this.width
     }
 
     if (this.height) {
-      this.instance.height = this.height
+      this.pDisplayObject.height = this.height
     }
   }
 
   @Watch('width')
-  onWidthChange (newValue: number) {
-    (this.instance as Container).width = newValue
+  onWidthChange (newValue: number): void {
+    this.pDisplayObject.width = newValue
   }
 
   @Watch('height')
-  onHeightChange (newValue: number) {
-    (this.instance as Container).height = newValue
+  onHeightChange (newValue: number): void {
+    this.pDisplayObject.height = newValue
   }
 
   @Watch('interactiveChildren')
-  onInteractiveChildrenChange (newValue: boolean) {
-    (this.instance as Container).interactiveChildren = newValue
+  onInteractiveChildrenChange (newValue: boolean): void {
+    this.pDisplayObject.interactiveChildren = newValue
   }
 }
