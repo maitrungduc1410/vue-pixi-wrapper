@@ -5,27 +5,40 @@
       <button @click="changeHeight">Change Height</button>
       <button @click="changeBackgroundColor">Change Background Color</button>
       <button @click="changeResolution">Change Resolution</button>
-      <button @click="changeText">Change Text</button>
+      <button @click="changeText">changeText</button>
     </div>
     <p-application
       :width="width"
       :height="height"
       :backgroundColor="backgroundColor"
       :resolution="resolution"
-      :skipHello="true"
     >
-      <p-text :text="text" :textStyle="style"/>
+      <p-container>
+        <p-bitmap-text
+          v-if="shouldRenderBitmap"
+          :text="text"
+          :textStyle="textStyle"
+        />
+      </p-container>
     </p-application>
   </div>
 </template>
 
 <script>
-import { PApplication, PText } from '@/'
+import { Loader } from 'pixi.js'
+
+import {
+  PApplication,
+  PContainer,
+  PBitmapText
+} from '@/'
 
 export default {
   components: {
     PApplication,
-    PText
+    PContainer,
+    PBitmapText
+
   },
   data () {
     return {
@@ -33,24 +46,27 @@ export default {
       height: 600,
       backgroundColor: 0x000000,
       resolution: 1,
+      shouldRenderBitmap: false,
       text: 'Hello World',
-      style: {
-        fontFamily: 'Arial',
-        fontSize: 36,
-        fontStyle: 'italic',
-        fontWeight: 'bold',
-        fill: ['#ffffff', '#00ff99'], // gradient
-        stroke: '#4a1850',
-        strokeThickness: 5,
-        dropShadow: true,
-        dropShadowColor: '#000000',
-        dropShadowBlur: 4,
-        dropShadowAngle: Math.PI / 6,
-        dropShadowDistance: 6,
-        wordWrap: true,
-        wordWrapWidth: 440
+      textStyle: {
+        fontName: 'Desyrel',
+        fontSize: 300
       }
     }
+  },
+  created () {
+    // make sure to load font first before render the Bitmap Text
+    const loader = new Loader()
+    loader
+      .add(
+        'desyrel',
+        'https://pixijs.io/examples/examples/assets/bitmap-font/desyrel.xml'
+      )
+      .load(this.onAssetsLoaded)
+
+    setTimeout(() => {
+      this.textStyle.fontSize = 100
+    }, 1000)
   },
   methods: {
     changeWidth () {
@@ -64,6 +80,9 @@ export default {
     },
     changeResolution () {
       this.resolution = 2
+    },
+    onAssetsLoaded () {
+      this.shouldRenderBitmap = true
     },
     changeText () {
       this.text = Date.now().toString()

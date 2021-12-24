@@ -42,7 +42,6 @@ export default class PDisplayObject extends Vue {
   @Prop({ type: Number, default: 0 }) readonly y!: number
   @Prop({ type: Number, default: 0 }) readonly zIndex!: number
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Inject({ default: null }) readonly app!: IApplication
 
   pDisplayObject!: DisplayObject
@@ -73,7 +72,6 @@ export default class PDisplayObject extends Vue {
   }
 
   addToParent (): void {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (this.shouldRender) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { instance }: any = this.$parent

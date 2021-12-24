@@ -12,14 +12,16 @@ export default class PBitmapText extends mixins(PContainer) {
   @Prop({ type: String, required: true }) readonly text!: string
   @Prop({
     type: Object,
-    default: () => {
-      return { align: 'left', tint: 0xFFFFFF }
-    }
+    required: true
   }) readonly textStyle!: Partial<IBitmapTextStyle>
 
   declare pDisplayObject: BitmapText
 
   override get instance (): BitmapText {
+    if (!this.textStyle.fontName) {
+      throw new Error('Missing property "fontName" in "textStyle"')
+    }
+
     if (!this.pDisplayObject) {
       this.pDisplayObject = new BitmapText(this.text, this.textStyle)
     }
@@ -29,5 +31,14 @@ export default class PBitmapText extends mixins(PContainer) {
   @Watch('text')
   onTextChange (newValue: string): void {
     this.pDisplayObject.text = newValue
+  }
+
+  @Watch('textStyle', { deep: true })
+  onTextStyleChange (newValue: Partial<IBitmapTextStyle>): void {
+    if (!newValue?.fontName) {
+      console.warn('Missing property "fontName" in "textStyle"')
+    } else {
+      this.reinit(new BitmapText(this.text, newValue))
+    }
   }
 }
