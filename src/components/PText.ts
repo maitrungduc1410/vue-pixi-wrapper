@@ -1,5 +1,5 @@
 import { Component, Prop, Watch } from 'vue-property-decorator'
-import { Text, TextStyle } from 'pixi.js'
+import { ITextStyle, Text, TextStyle } from 'pixi.js'
 import PSprite from './PSprite'
 import { mixins } from 'vue-class-component'
 
@@ -11,9 +11,8 @@ import { mixins } from 'vue-class-component'
 export default class PText extends mixins(PSprite) {
   @Prop({ type: String }) readonly text!: string
   @Prop({
-    type: Object,
-    validator: value => value instanceof TextStyle
-  }) readonly textStyle?: TextStyle
+    type: Object
+  }) readonly textStyle?: Partial<ITextStyle>
 
   @Prop({
     type: Object,
