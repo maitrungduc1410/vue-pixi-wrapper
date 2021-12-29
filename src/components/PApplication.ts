@@ -6,7 +6,7 @@ import {
   Watch,
   Provide
 } from 'vue-property-decorator'
-import { AbstractRenderer, Application, Container, Renderer, utils } from 'pixi.js'
+import { AbstractRenderer, Application, Container, Renderer, settings, utils } from 'pixi.js'
 import { eventHandlers, READY_EVENT } from '../constants'
 
 export interface IApplication {
@@ -25,25 +25,33 @@ export default class PApplication extends Vue {
   @Prop({ type: String, default: 'canvas' }) readonly canvasId!: string
   @Prop({ type: Boolean, default: false }) readonly skipHello!: boolean
   @Prop({ type: Boolean, default: false }) readonly enableTicker!: boolean
+  @Prop({ type: Boolean, default: false }) readonly interactive!: boolean
+  @Prop({ type: Array, default: () => { return [] } }) readonly events!: string[]
 
   @Prop({ type: Boolean, default: true }) readonly autoStart?: boolean
   @Prop({ type: Number, default: 800 }) readonly width!: number
   @Prop({ type: Number, default: 600 }) readonly height!: number
-  @Prop({ type: Boolean, default: false }) readonly autoDensity?: boolean
-  @Prop({ type: Boolean, default: false }) readonly antialias?: boolean
-  @Prop({ type: Boolean, default: false }) readonly preserveDrawingBuffer?: boolean
-  @Prop({ type: Number, default: 1 }) readonly resolution!: number
-  @Prop({ type: Boolean, default: true }) readonly forceCanvas?: boolean
+  // @Prop({
+  //   type: Object,
+  //   validator: value => value instanceof HTMLCanvasElement
+  // }) readonly view?: HTMLCanvasElement
+
+  @Prop({ type: Boolean, default: true }) readonly useContextAlpha!: boolean
+  @Prop({ type: Boolean, default: false }) readonly autoDensity!: boolean
+  @Prop({ type: Boolean, default: false }) readonly antialias!: boolean
+  @Prop({ type: Boolean, default: false }) readonly preserveDrawingBuffer!: boolean
+  @Prop({ type: Number, default: settings.RESOLUTION }) readonly resolution!: number
+  @Prop({ type: Boolean, default: false }) readonly forceCanvas!: boolean
   @Prop({ type: Number, default: 0x000000 }) readonly backgroundColor!: number
   @Prop({ type: Number, default: 1 }) readonly backgroundAlpha!: number
-  @Prop({ type: Boolean, default: true }) readonly clearBeforeRender?: boolean
-  @Prop({ type: Boolean, default: false }) readonly forceFXAA?: boolean
+  @Prop({ type: Boolean, default: true }) readonly clearBeforeRender!: boolean
   @Prop({ type: String }) readonly powerPreference?: string
-  @Prop({ type: Boolean, default: false }) readonly sharedLoader?: string
-
-  @Prop({ type: Boolean }) readonly interactive?: boolean
-  @Prop({ type: Array, default: () => { return [] } }) readonly events!: string[]
-  // @Prop({ type: Window | HTMLElement, default: '' }) readonly resizeTo?: Window | HTMLElement
+  @Prop({ type: Boolean, default: false }) readonly sharedLoader?: boolean
+  @Prop({ type: Boolean, default: false }) readonly sharedTicker!: boolean
+  @Prop({
+    type: Object,
+    validator: value => value instanceof Window || value instanceof HTMLElement
+  }) readonly resizeTo!: Window | HTMLElement
 
   public application: IApplication = {
     instance: null,

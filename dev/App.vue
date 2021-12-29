@@ -1,91 +1,41 @@
 <template>
   <div id="app">
-    <div>
-      <button @click="changeWidth">Change Width</button>
-      <button @click="changeHeight">Change Height</button>
-      <button @click="changeBackgroundColor">Change Background Color</button>
-      <button @click="changeResolution">Change Resolution</button>
-      <button @click="changeText">changeText</button>
-    </div>
-    <p-application
-      :width="width"
-      :height="height"
-      :backgroundColor="backgroundColor"
-      :resolution="resolution"
-    >
-      <p-container>
-        <p-bitmap-text
-          v-if="shouldRenderBitmap"
-          :text="text"
-          :textStyle="textStyle"
-        />
-      </p-container>
+    <p-application :enableTicker="true" @ticker="ticker">
+      <p-simple-plane
+        :src="'https://pixijs.io/examples/examples/assets/bg_grass.jpg'"
+        :verticesX="10"
+        :verticesY="10"
+        @ready="planeReady"
+      >
+      </p-simple-plane>
     </p-application>
   </div>
 </template>
 
 <script>
-import { Loader } from 'pixi.js'
-
-import {
-  PApplication,
-  PContainer,
-  PBitmapText
-} from '@/'
+import { PApplication, PSimplePlane } from '@/'
 
 export default {
   components: {
     PApplication,
-    PContainer,
-    PBitmapText
-
+    PSimplePlane
   },
   data () {
     return {
-      width: 800,
-      height: 600,
-      backgroundColor: 0x000000,
-      resolution: 1,
-      shouldRenderBitmap: false,
-      text: 'Hello World',
-      textStyle: {
-        fontName: 'Desyrel',
-        fontSize: 300
-      }
+      plane: {},
+      buffer: {}
     }
   },
-  created () {
-    // make sure to load font first before render the Bitmap Text
-    const loader = new Loader()
-    loader
-      .add(
-        'desyrel',
-        'https://pixijs.io/examples/examples/assets/bitmap-font/desyrel.xml'
-      )
-      .load(this.onAssetsLoaded)
-
-    setTimeout(() => {
-      this.textStyle.fontSize = 100
-    }, 1000)
-  },
   methods: {
-    changeWidth () {
-      this.width = 400
+    planeReady (instance) {
+      this.plane = instance
+      this.buffer = instance.geometry.getBuffer('aVertexPosition')
     },
-    changeHeight () {
-      this.height = 300
-    },
-    changeBackgroundColor () {
-      this.backgroundColor = 0x1099bb
-    },
-    changeResolution () {
-      this.resolution = 2
-    },
-    onAssetsLoaded () {
-      this.shouldRenderBitmap = true
-    },
-    changeText () {
-      this.text = Date.now().toString()
+    ticker () {
+      for (let i = 0; i < this.buffer.data.length; i++) {
+        this.buffer.data[i] += Math.random() - 0.5
+      }
+      this.buffer.update()
     }
   }
 }
