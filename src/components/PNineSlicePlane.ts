@@ -9,10 +9,10 @@ import { PSimplePlane } from '..'
  */
 @Component
 export default class PNineSlicePlane extends mixins(PSimplePlane) {
-  @Prop({ type: Number, default: 10 }) readonly leftWidth?: number
-  @Prop({ type: Number, default: 10 }) readonly topHeight?: number
-  @Prop({ type: Number, default: 10 }) readonly rightWidth?: number
-  @Prop({ type: Number, default: 10 }) readonly bottomHeight?: number
+  @Prop({ type: Number, default: 10 }) readonly leftWidth!: number
+  @Prop({ type: Number, default: 10 }) readonly topHeight!: number
+  @Prop({ type: Number, default: 10 }) readonly rightWidth!: number
+  @Prop({ type: Number, default: 10 }) readonly bottomHeight!: number
 
   // override these required props from PSimplePlane
   @Prop() declare readonly verticesX: number
@@ -25,6 +25,8 @@ export default class PNineSlicePlane extends mixins(PSimplePlane) {
   override get instance (): NineSlicePlane {
     if (this.texture) {
       this.pDisplayObject = new NineSlicePlane(this.texture, this.leftWidth, this.topHeight, this.rightWidth, this.bottomHeight)
+    } else if (this.src) {
+      this.pDisplayObject = new NineSlicePlane(Texture.from(this.src), this.leftWidth, this.topHeight, this.rightWidth, this.bottomHeight)
     }
 
     return this.pDisplayObject
