@@ -31,14 +31,4 @@ export default class PNineSlicePlane extends mixins(PSimplePlane) {
 
     return this.pDisplayObject
   }
-
-  @Watch('texture')
-  override onTextureChange (newValue: Texture): void {
-    this.pDisplayObject.texture = newValue
-  }
-
-  @Watch('src')
-  override onSrcChange (newValue: string): void {
-    this.pDisplayObject.texture = Texture.from(newValue)
-  }
 }

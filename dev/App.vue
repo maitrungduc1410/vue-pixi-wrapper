@@ -1,42 +1,21 @@
 <template>
   <div id="app">
-    <p-application :enableTicker="true" @ticker="ticker">
-      <p-simple-plane
+    <p-application>
+      <p-nine-slice-plane
         :src="'https://pixijs.io/examples/examples/assets/bg_grass.jpg'"
-        :verticesX="10"
-        :verticesY="10"
-        @ready="planeReady"
       >
-      </p-simple-plane>
+      </p-nine-slice-plane>
     </p-application>
   </div>
 </template>
 
 <script>
-import { PApplication, PSimplePlane } from '@/'
+import { PApplication, PNineSlicePlane } from '@/'
 
 export default {
   components: {
     PApplication,
-    PSimplePlane
-  },
-  data () {
-    return {
-      plane: {},
-      buffer: {}
-    }
-  },
-  methods: {
-    planeReady (instance) {
-      this.plane = instance
-      this.buffer = instance.geometry.getBuffer('aVertexPosition')
-    },
-    ticker () {
-      for (let i = 0; i < this.buffer.data.length; i++) {
-        this.buffer.data[i] += Math.random() - 0.5
-      }
-      this.buffer.update()
-    }
+    PNineSlicePlane
   }
 }
 </script>
