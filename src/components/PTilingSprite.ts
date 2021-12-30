@@ -1,4 +1,4 @@
-import { Component, Prop, Watch } from 'vue-property-decorator'
+import { Component } from 'vue-property-decorator'
 import { TilingSprite, Texture } from 'pixi.js'
 import PSprite from './PSprite'
 import { mixins } from 'vue-class-component'
@@ -9,20 +9,19 @@ import { mixins } from 'vue-class-component'
  */
 @Component
 export default class PTilingSprite extends mixins(PSprite) {
-  @Prop({ type: String, required: true }) readonly image!: string
-
   declare pDisplayObject: TilingSprite
 
   override get instance (): TilingSprite {
     if (!this.pDisplayObject) {
-      this.pDisplayObject = new TilingSprite(Texture.from(this.image), this.width, this.height)
+      this.pDisplayObject = new TilingSprite(Texture.from(this.src), this.width, this.height)
+
+      if (this.texture) {
+        this.pDisplayObject = new TilingSprite(this.texture, this.width, this.height)
+      } else {
+        this.pDisplayObject = new TilingSprite(Texture.from(this.src), this.width, this.height)
+      }
     }
 
     return this.pDisplayObject
-  }
-
-  @Watch('image')
-  onImageChange (newValue: string): void {
-    this.pDisplayObject.texture = Texture.from(newValue)
   }
 }

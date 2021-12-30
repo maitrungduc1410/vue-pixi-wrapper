@@ -10,9 +10,9 @@ import { mixins } from 'vue-class-component'
 @Component
 export default class PAnimatedSprite extends mixins(PSprite) {
   @Prop({ type: Array, default: [] }) readonly images!: string[]
-  @Prop({ type: Boolean, default: false }) readonly autoUpdate?: boolean
-  @Prop({ type: Number, default: 1 }) readonly animationSpeed?: number
-  @Prop({ type: Number, default: 0 }) readonly initialFrame?: number
+  @Prop({ type: Boolean }) readonly autoUpdate?: boolean
+  @Prop({ type: Number, default: 1 }) readonly animationSpeed!: number
+  @Prop({ type: Number, default: 0 }) readonly initialFrame!: number
 
   public textureArray: Texture[] = []
   declare pDisplayObject: AnimatedSprite
@@ -26,9 +26,9 @@ export default class PAnimatedSprite extends mixins(PSprite) {
 
   override get instance (): AnimatedSprite {
     if (!this.pDisplayObject && this.textureArray.length) {
-      this.pDisplayObject = new AnimatedSprite(this.textureArray)
-      this.pDisplayObject.gotoAndPlay(this.initialFrame as number)
-      this.pDisplayObject.animationSpeed = this.animationSpeed as number
+      this.pDisplayObject = new AnimatedSprite(this.textureArray, this.autoUpdate)
+      this.pDisplayObject.gotoAndPlay(this.initialFrame)
+      this.pDisplayObject.animationSpeed = this.animationSpeed
     }
 
     return this.pDisplayObject
@@ -37,6 +37,11 @@ export default class PAnimatedSprite extends mixins(PSprite) {
   @Watch('animationSpeed')
   onAnimationSpeedChange (newValue: number): void {
     this.pDisplayObject.animationSpeed = newValue
+  }
+
+  @Watch('autoUpdate')
+  onAutoUpdateChange (newValue: boolean): void {
+    this.pDisplayObject.autoUpdate = newValue
   }
 
   // TODO: watch on images changes

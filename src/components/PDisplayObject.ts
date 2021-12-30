@@ -19,16 +19,34 @@ export default class PDisplayObject extends Vue {
   @Prop({ type: Number, default: 0 }) readonly angle!: number
   @Prop({ type: Boolean, default: false }) readonly buttonMode!: boolean
   @Prop({ type: Boolean, default: false }) readonly cacheAsBitmap!: boolean
-  @Prop() readonly cursor!: 'help' | 'wait' | 'crosshair' | 'not-allowed' | 'zoom-in' | 'grab' | null
-  @Prop({ default: null }) readonly filterArea!: Rectangle | null
-  @Prop() readonly filters!: Filter[]
+  @Prop({
+    type: String,
+    validator: value => ['help', 'wait', 'crosshair', 'not-allowed', 'zoom-in', 'grab', undefined].includes(value)
+  }) readonly cursor?: 'help' | 'wait' | 'crosshair' | 'not-allowed' | 'zoom-in' | 'grab' | undefined
+
+  @Prop({
+    type: Object,
+    validator: value => value instanceof Rectangle
+  }) readonly filterArea?: Rectangle
+
+  @Prop({
+    type: Object,
+    validator: value => value instanceof Filter
+  }) readonly filters?: Filter[]
+
   @Prop({ default: null }) readonly hitArea!: IHitArea | null
   @Prop({ type: Boolean, default: false }) readonly interactive!: boolean
   @Prop({ type: Boolean, default: false }) readonly isMask!: boolean
   @Prop({ type: Boolean, default: false }) readonly isSprite!: boolean
   // @Prop({ default: null }) readonly localTransform!: Matrix
-  @Prop({ default: null }) readonly mask!: Container | MaskData
-  @Prop({ type: String }) readonly name!: string | null
+
+  // TODO: handle this so that user doesn't need to pass native PIXI Container
+  @Prop({
+    type: Object,
+    validator: value => value instanceof Container || value instanceof MaskData
+  }) readonly mask?: Container | MaskData
+
+  @Prop({ type: String }) readonly name?: string
   @Prop({ type: Number, default: 0 }) readonly pivotX!: number
   @Prop({ type: Number, default: 0 }) readonly pivotY!: number
   @Prop({ type: Boolean, default: true }) readonly renderable!: boolean
@@ -183,7 +201,7 @@ export default class PDisplayObject extends Vue {
   }
 
   @Watch('mask')
-  onMaskChange (newValue: Container): void {
+  onMaskChange (newValue: Container | MaskData): void {
     this.instance.mask = newValue
   }
 

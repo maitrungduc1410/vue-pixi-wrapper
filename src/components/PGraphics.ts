@@ -1,5 +1,5 @@
 import { Component, Prop, Watch } from 'vue-property-decorator'
-import { Graphics } from 'pixi.js'
+import { Graphics, GraphicsGeometry } from 'pixi.js'
 import PContainer from './PContainer'
 import { mixins } from 'vue-class-component'
 
@@ -10,13 +10,14 @@ import { mixins } from 'vue-class-component'
 @Component
 export default class PGraphics extends mixins(PContainer) {
   @Prop({ type: Function, required: true }) readonly draw!: (g: Graphics) => void
+  @Prop({ type: Object }) readonly geometry?: GraphicsGeometry
   @Prop({ type: Array }) readonly reactiveData!: string[] // data that should be watched to re-render graphics
 
   declare pDisplayObject: Graphics
 
   override get instance (): Graphics {
     if (!this.pDisplayObject) {
-      this.pDisplayObject = new Graphics()
+      this.pDisplayObject = new Graphics(this.geometry)
       this.draw.call(this.pDisplayObject, this.pDisplayObject)
     }
 

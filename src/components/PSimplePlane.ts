@@ -4,7 +4,7 @@ import { mixins } from 'vue-class-component'
 import PMesh from './PMesh'
 
 /**
- * The rope allows you to draw a texture across several points and then manipulate these points
+ * The SimplePlane allows you to draw a texture across several points and then manipulate these points
  *
  */
 @Component

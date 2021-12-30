@@ -4,7 +4,7 @@ import { mixins } from 'vue-class-component'
 import { PSimplePlane } from '..'
 
 /**
- * The rope allows you to draw a texture across several points and then manipulate these points
+ * The NineSlicePlane allows you to stretch a texture using 9-slice scaling. The corners will remain unscaled (useful for buttons with rounded corners for example) and the other areas will be scaled horizontally and or vertically
  *
  */
 @Component

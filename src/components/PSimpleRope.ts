@@ -15,7 +15,7 @@ export default class PSimpleRope extends mixins(PMesh) {
   }) readonly texture?: Texture
 
   @Prop({ type: String }) readonly src?: string
-  @Prop({ required: true }) readonly points!: Point[]
+  @Prop({ type: Array, required: true }) readonly points!: Point[]
   @Prop({ type: Number, default: 0 }) readonly textureScale!: number
 
   //  override these required props from PMesh

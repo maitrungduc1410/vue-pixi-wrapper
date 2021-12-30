@@ -9,7 +9,7 @@ import { mixins } from 'vue-class-component'
  */
 @Component
 export default class PText extends mixins(PSprite) {
-  @Prop({ type: String }) readonly text!: string
+  @Prop({ type: String, required: true }) readonly text!: string
   @Prop({
     type: Object
   }) readonly textStyle?: Partial<ITextStyle>
