@@ -1,4 +1,4 @@
-import { Component, Prop, Watch } from 'vue-property-decorator'
+import { Component, Prop } from 'vue-property-decorator'
 import { Texture, Geometry, MeshMaterial, NineSlicePlane } from 'pixi.js'
 import { mixins } from 'vue-class-component'
 import { PSimplePlane } from '..'

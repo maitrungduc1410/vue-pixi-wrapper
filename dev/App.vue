@@ -1,21 +1,76 @@
 <template>
   <div id="app">
-    <p-application>
-      <p-nine-slice-plane
-        :src="'https://pixijs.io/examples/examples/assets/bg_grass.jpg'"
-      >
-      </p-nine-slice-plane>
+    <div>
+      <button @click="changeWidth">Change Width</button>
+      <button @click="changeHeight">Change Height</button>
+      <button @click="changeBackgroundColor">Change Background Color</button>
+      <button @click="changeResolution">Change Resolution</button>
+      <button @click="changeText">Change Text</button>
+    </div>
+    <p-application
+      :width="width"
+      :height="height"
+      :backgroundColor="backgroundColor"
+      :resolution="resolution"
+      :skipHello="true"
+    >
+      <p-container>
+        <p-text :text="text" :textStyle="style"/>
+      </p-container>
     </p-application>
   </div>
 </template>
 
 <script>
-import { PApplication, PNineSlicePlane } from '@/'
+import { PApplication, PContainer, PText } from '@/'
 
 export default {
   components: {
     PApplication,
-    PNineSlicePlane
+    PText,
+    PContainer
+  },
+  data () {
+    return {
+      width: 800,
+      height: 600,
+      backgroundColor: 0x000000,
+      resolution: 1,
+      text: 'Hello World',
+      style: {
+        fontFamily: 'Arial',
+        fontSize: 36,
+        fontStyle: 'italic',
+        fontWeight: 'bold',
+        fill: ['#ffffff', '#00ff99'], // gradient
+        stroke: '#4a1850',
+        strokeThickness: 5,
+        dropShadow: true,
+        dropShadowColor: '#000000',
+        dropShadowBlur: 4,
+        dropShadowAngle: Math.PI / 6,
+        dropShadowDistance: 6,
+        wordWrap: true,
+        wordWrapWidth: 440
+      }
+    }
+  },
+  methods: {
+    changeWidth () {
+      this.width = 400
+    },
+    changeHeight () {
+      this.height = 300
+    },
+    changeBackgroundColor () {
+      this.backgroundColor = 0x1099bb
+    },
+    changeResolution () {
+      this.resolution = 2
+    },
+    changeText () {
+      this.text = Date.now().toString()
+    }
   }
 }
 </script>

@@ -147,8 +147,8 @@ export default class PApplication extends Vue {
     this.renderer.resolution = val
   }
 
-  @Watch('backgroundAlpha')
-  onChangeBackgroundAlpha (val: number): void {
-    this.renderer.backgroundAlpha = val
-  }
+  // @Watch('backgroundAlpha')
+  // onChangeBackgroundAlpha (val: number): void {
+  //   this.renderer.backgroundAlpha = val
+  // }
 }

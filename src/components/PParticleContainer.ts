@@ -1,5 +1,5 @@
 import { Component, Prop, Watch } from 'vue-property-decorator'
-import { IParticleProperties, ParticleContainer } from 'pixi.js'
+import { ParticleContainer } from 'pixi.js'
 import PContainer from './PContainer'
 import { mixins } from 'vue-class-component'
 
@@ -10,7 +10,7 @@ import { mixins } from 'vue-class-component'
 @Component
 export default class PParticleContainer extends mixins(PContainer) {
   @Prop({ type: Number, default: 1500 }) readonly maxSize?: number
-  @Prop({ type: Object }) readonly properties?: IParticleProperties
+  @Prop({ type: Object }) readonly properties?: any
   @Prop({ type: Number, default: 16384 }) readonly batchSize?: number
   @Prop({ type: Boolean, default: false }) readonly autoResize?: boolean
 
@@ -29,7 +29,7 @@ export default class PParticleContainer extends mixins(PContainer) {
   }
 
   @Watch('properties', { deep: true })
-  onPropertiesChange (newValue: IParticleProperties): void {
+  onPropertiesChange (newValue: unknown): void {
     this.pDisplayObject.setProperties(newValue)
   }
 }

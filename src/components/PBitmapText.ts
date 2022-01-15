@@ -1,5 +1,5 @@
 import { Component, Prop, Watch } from 'vue-property-decorator'
-import { BitmapText, IBitmapTextStyle } from 'pixi.js'
+import { BitmapText } from 'pixi.js'
 import PContainer from './PContainer'
 import { mixins } from 'vue-class-component'
 
@@ -13,7 +13,7 @@ export default class PBitmapText extends mixins(PContainer) {
   @Prop({
     type: Object,
     required: true
-  }) readonly textStyle!: Partial<IBitmapTextStyle>
+  }) readonly textStyle!: any
 
   declare pDisplayObject: BitmapText
 
@@ -34,7 +34,7 @@ export default class PBitmapText extends mixins(PContainer) {
   }
 
   @Watch('textStyle', { deep: true })
-  onTextStyleChange (newValue: Partial<IBitmapTextStyle>): void {
+  onTextStyleChange (newValue: any): void {
     if (!newValue?.fontName) {
       console.warn('Missing property "fontName" in "textStyle"')
     } else {
