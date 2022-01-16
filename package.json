@@ -1,6 +1,6 @@
 {
   "name": "vue-pixi-wrapper",
-  "version": "2.2.0",
+  "version": "2.3.2",
   "description": "🖐VueJS wrapper implementation for creating application with PIXI.js",
   "author": "Mai Trung Duc",
   "main": "./lib/index.js",
@@ -22,9 +22,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "pixi.js": "^5.2.1",
-    "vue-class-component": "^7.2.3",
-    "vue-property-decorator": "^9.1.2"
+    "pixi.js": "^5.2.1"
   },
   "devDependencies": {
     "@types/jest": "^24.0.19",
@@ -39,6 +37,7 @@
     "@vue/eslint-config-standard": "^5.1.2",
     "@vue/eslint-config-typescript": "^7.0.0",
     "@vue/test-utils": "^1.0.3",
+    "core-js": "^3.6.5",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
@@ -47,9 +46,8 @@
     "eslint-plugin-vue": "^6.2.2",
     "lint-staged": "^9.5.0",
     "typescript": "^4.1.2",
-    "vue-template-compiler": "^2.6.11",
-    "core-js": "^3.6.5",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vue-template-compiler": "^2.6.11"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"

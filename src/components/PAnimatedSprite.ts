@@ -1,48 +1,52 @@
-import { Component, Prop, Watch } from 'vue-property-decorator'
-import { Texture, AnimatedSprite } from 'pixi.js'
 import PSprite from './PSprite'
-import { mixins } from 'vue-class-component'
-
+import { PropType } from 'vue'
 /**
  * An AnimatedSprite is a simple way to display an animation depicted by a list of textures
  *
  */
-@Component
-export default class PAnimatedSprite extends mixins(PSprite) {
-  @Prop({ type: Array, default: [] }) readonly images!: string[]
-  @Prop({ type: Boolean }) readonly autoUpdate?: boolean
-  @Prop({ type: Number, default: 1 }) readonly animationSpeed!: number
-  @Prop({ type: Number, default: 0 }) readonly initialFrame!: number
 
-  public textureArray: Texture[] = []
-  declare pDisplayObject: AnimatedSprite
-
-  override created (): void {
+const PAnimatedSprite = PSprite.extend({
+  props: {
+    images: { type: Array as PropType<string[]>, default: [] },
+    autoUpdate: Boolean,
+    animationSpeed: { type: Number, default: 1 },
+    initialFrame: { type: Number, default: 0 }
+  },
+  data (): {
+    pDisplayObject: PIXI.AnimatedSprite | null,
+    textureArray: PIXI.Texture[]
+    } {
+    return {
+      pDisplayObject: null,
+      textureArray: []
+    }
+  },
+  created (): void {
     for (const image of this.images) {
-      const texture = Texture.from(image)
+      const texture = window.PIXI.Texture.from(image)
       this.textureArray.push(texture)
     }
-  }
+  },
+  computed: {
+    instance (): PIXI.AnimatedSprite {
+      if (!this.pDisplayObject && this.textureArray.length) {
+        this.pDisplayObject = new window.PIXI.AnimatedSprite(this.textureArray, this.autoUpdate)
+        this.pDisplayObject.gotoAndPlay(this.initialFrame)
+        this.pDisplayObject.animationSpeed = this.animationSpeed
+      }
 
-  override get instance (): AnimatedSprite {
-    if (!this.pDisplayObject && this.textureArray.length) {
-      this.pDisplayObject = new AnimatedSprite(this.textureArray, this.autoUpdate)
-      this.pDisplayObject.gotoAndPlay(this.initialFrame)
-      this.pDisplayObject.animationSpeed = this.animationSpeed
+      return this.pDisplayObject
     }
+  },
+  watch: {
+    animationSpeed (newValue: number): void {
+      this.pDisplayObject.animationSpeed = newValue
+    },
 
-    return this.pDisplayObject
+    autoUpdate (newValue: boolean): void {
+      this.pDisplayObject.autoUpdate = newValue
+    }
   }
+})
 
-  @Watch('animationSpeed')
-  onAnimationSpeedChange (newValue: number): void {
-    this.pDisplayObject.animationSpeed = newValue
-  }
-
-  @Watch('autoUpdate')
-  onAutoUpdateChange (newValue: boolean): void {
-    this.pDisplayObject.autoUpdate = newValue
-  }
-
-  // TODO: watch on images changes
-}
+export default PAnimatedSprite

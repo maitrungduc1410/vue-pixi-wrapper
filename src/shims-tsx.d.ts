@@ -1,5 +1,5 @@
 import Vue, { VNode } from 'vue'
-
+import * as PIXI from 'pixi.js'
 declare global {
   namespace JSX {
     // tslint:disable no-empty-interface
@@ -10,4 +10,6 @@ declare global {
       [elem: string]: any
     }
   }
+
+  interface Window { PIXI: typeof PIXI; }
 }

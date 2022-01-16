@@ -1,34 +1,35 @@
-import { Component, Prop, Watch } from 'vue-property-decorator'
-import { Graphics, GraphicsGeometry } from 'pixi.js'
 import PContainer from './PContainer'
-import { mixins } from 'vue-class-component'
+import { PropType } from 'vue'
 
-/**
- * The Graphics class contains methods used to draw primitive shapes such as lines, circles and rectangles to the display, and to color and fill them.
- *
- */
-@Component
-export default class PGraphics extends mixins(PContainer) {
-  @Prop({ type: Function, required: true }) readonly draw!: (g: Graphics) => void
-  @Prop({ type: Object }) readonly geometry?: GraphicsGeometry
-  @Prop({ type: Array }) readonly reactiveData!: string[] // data that should be watched to re-render graphics
-
-  declare pDisplayObject: Graphics
-
-  override get instance (): Graphics {
-    if (!this.pDisplayObject) {
-      this.pDisplayObject = new Graphics(this.geometry)
-      this.draw.call(this.pDisplayObject, this.pDisplayObject)
+const PGraphics = PContainer.extend({
+  props: {
+    draw: { type: Function, required: true },
+    geometry: { type: Object as PropType<PIXI.GraphicsGeometry> },
+    reactiveData: { type: Array as PropType<string[]> } // data that should be watched to re-render graphics
+  },
+  data (): { pDisplayObject: PIXI.Graphics | null } {
+    return {
+      pDisplayObject: null
     }
+  },
+  computed: {
+    instance (): PIXI.Graphics {
+      if (!this.pDisplayObject) {
+        this.pDisplayObject = new window.PIXI.Graphics(this.geometry)
+        this.draw.call(this.pDisplayObject, this.pDisplayObject)
+      }
 
-    return this.pDisplayObject
+      return this.pDisplayObject
+    }
+  },
+  watch: {
+    reactiveData (newValue: number): void {
+      const g = this.pDisplayObject as PIXI.Graphics
+      g.clear()
+      this.draw.call(g, g)
+      this.$emit('onUpdate', g)
+    }
   }
+})
 
-  @Watch('reactiveData')
-  onReactiveDataChange (): void {
-    const g = this.pDisplayObject as Graphics
-    g.clear()
-    this.draw.call(g, g)
-    this.$emit('onUpdate', g)
-  }
-}
+export default PGraphics

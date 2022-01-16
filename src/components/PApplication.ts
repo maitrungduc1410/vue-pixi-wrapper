@@ -1,98 +1,148 @@
-import { VNode, CreateElement } from 'vue/types'
-import {
-  Vue,
-  Component,
-  Prop,
-  Watch,
-  Provide
-} from 'vue-property-decorator'
-import { AbstractRenderer, Application, Container, Renderer, settings, utils } from 'pixi.js'
 import { eventHandlers, READY_EVENT } from '../constants'
+import Vue, { CreateElement, PropType, VNode } from 'vue'
 
 export interface IApplication {
-  instance: Application | null;
+  instance: PIXI.Application | null;
   EventBus: Vue;
   isReady: boolean;
 }
 
-/**
- * Convenience class to create a new PIXI application.
- *
- * This class automatically creates the renderer, ticker and root container.
- */
-@Component
-export default class PApplication extends Vue {
-  @Prop({ type: String, default: 'canvas' }) readonly canvasId!: string
-  @Prop({ type: Boolean, default: false }) readonly skipHello!: boolean
-  @Prop({ type: Boolean, default: false }) readonly enableTicker!: boolean
-  @Prop({ type: Boolean, default: false }) readonly interactive!: boolean
-  @Prop({ type: Array, default: () => { return [] } }) readonly events!: string[]
+const PApplication = Vue.extend({
+  name: 'p-application',
+  props: {
+    canvasId: {
+      type: String,
+      default: 'canvas'
+    },
+    skipHello: {
+      type: Boolean,
+      default: false
+    },
+    enableTicker: {
+      type: Boolean,
+      default: false
+    },
+    interactive: {
+      type: Boolean,
+      default: false
+    },
+    events: {
+      type: Array as PropType<Array<string>>,
+      default: () => { return [] }
+    },
 
-  @Prop({ type: Boolean, default: true }) readonly autoStart?: boolean
-  @Prop({ type: Number, default: 800 }) readonly width!: number
-  @Prop({ type: Number, default: 600 }) readonly height!: number
-  // @Prop({
-  //   type: Object,
-  //   validator: value => value instanceof HTMLCanvasElement
-  // }) readonly view?: HTMLCanvasElement
-
-  @Prop({ type: Boolean, default: true }) readonly useContextAlpha!: boolean
-  @Prop({ type: Boolean, default: false }) readonly autoDensity!: boolean
-  @Prop({ type: Boolean, default: false }) readonly antialias!: boolean
-  @Prop({ type: Boolean, default: false }) readonly preserveDrawingBuffer!: boolean
-  @Prop({ type: Number, default: settings.RESOLUTION }) readonly resolution!: number
-  @Prop({ type: Boolean, default: false }) readonly forceCanvas!: boolean
-  @Prop({ type: Number, default: 0x000000 }) readonly backgroundColor!: number
-  @Prop({ type: Number, default: 1 }) readonly backgroundAlpha!: number
-  @Prop({ type: Boolean, default: true }) readonly clearBeforeRender!: boolean
-  @Prop({ type: String }) readonly powerPreference?: string
-  @Prop({ type: Boolean, default: false }) readonly sharedLoader?: boolean
-  @Prop({ type: Boolean, default: false }) readonly sharedTicker!: boolean
-  @Prop({
-    type: Object,
-    validator: value => value instanceof Window || value instanceof HTMLElement
-  }) readonly resizeTo!: Window | HTMLElement
-
-  public application: IApplication = {
-    instance: null,
-    EventBus: new Vue(),
-    isReady: false
-  }
-
-  @Provide() app = this.application
-
-  get instance (): Container {
-    return (this.application.instance as Application).stage
-  }
-
-  get renderer (): Renderer | AbstractRenderer {
-    return (this.application.instance as Application).renderer
-  }
-
+    autoStart: {
+      type: Boolean,
+      default: true
+    },
+    width: {
+      type: Number,
+      default: 800
+    },
+    height: {
+      type: Number,
+      default: 600
+    },
+    view: {
+      type: Object,
+      validator: value => value instanceof HTMLCanvasElement
+    },
+    useContextAlpha: {
+      type: Boolean,
+      default: true
+    },
+    autoDensity: {
+      type: Boolean,
+      default: false
+    },
+    antialias: {
+      type: Boolean,
+      default: false
+    },
+    preserveDrawingBuffer: {
+      type: Boolean,
+      default: false
+    },
+    resolution: {
+      type: Number,
+      default: 1
+    },
+    forceCanvas: {
+      type: Boolean,
+      default: false
+    },
+    backgroundColor: {
+      type: Number,
+      default: 0x000000
+    },
+    backgroundAlpha: {
+      type: Number,
+      default: 1
+    },
+    clearBeforeRender: {
+      type: Boolean,
+      default: true
+    },
+    powerPreference: String,
+    sharedLoader: {
+      type: Boolean,
+      default: false
+    },
+    sharedTicker: {
+      type: Boolean,
+      default: false
+    },
+    resizeTo: {
+      type: Object,
+      validator: value => value instanceof Window || value instanceof HTMLElement
+    }
+  },
+  provide (): { app: IApplication } {
+    return {
+      app: this.application
+    }
+  },
+  data (): { application: IApplication } {
+    return {
+      application: {
+        instance: null,
+        EventBus: new Vue(),
+        isReady: false
+      }
+    }
+  },
+  computed: {
+    instance (): PIXI.Container {
+      return (this.application.instance as PIXI.Application).stage
+    },
+    renderer (): PIXI.Renderer | PIXI.AbstractRenderer {
+      return (this.application.instance as PIXI.Application).renderer
+    }
+  },
   render (h: CreateElement): VNode {
     return h('canvas', {
       attrs: {
         id: this.canvasId
       }
     }, this.$slots.default)
-  }
+  },
 
   beforeDestroy (): void {
     this.instance.removeAllListeners() // remove all event listeners
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.application.instance!.destroy(true)
-  }
+  },
 
   created (): void {
     if (this.skipHello) {
-      utils.skipHello()
+      window.PIXI.utils.skipHello()
     }
-  }
+  },
 
   mounted (): void {
     const canvas = document.getElementById(this.canvasId) as HTMLCanvasElement
 
-    this.application.instance = new Application({
+    this.application.instance = new window.PIXI.Application({
       ...this.$props,
       view: canvas
     })
@@ -107,48 +157,45 @@ export default class PApplication extends Vue {
     if (this.enableTicker) { // only enable ticker if need
       this.application.instance.ticker.add((delta: number) => this.$emit('ticker', delta))
     }
-  }
+  },
+  methods: {
+    initProps (): void {
+      if (this.interactive) {
+        this.instance.interactive = this.interactive
+      }
+    },
+    initEvents (): void {
+      for (const event of this.events) {
+        const index = eventHandlers.findIndex(item => item === event)
 
-  initProps (): void {
-    if (this.interactive) {
-      this.instance.interactive = this.interactive
-    }
-  }
-
-  initEvents (): void {
-    for (const event of this.events) {
-      const index = eventHandlers.findIndex(item => item === event)
-
-      if (index === -1) {
-        console.error(`[Even listener error]: There's no event listener for event name '${event}'`)
-      } else {
-        this.instance.on(event, (e: Event) => this.$emit(`on${event}`, e))
+        if (index === -1) {
+          console.error(`[Even listener error]: There's no event listener for event name '${event}'`)
+        } else {
+          this.instance.on(event, (e: Event) => this.$emit(`on${event}`, e))
+        }
       }
     }
-  }
+  },
+  watch: {
+    width (val: number): void {
+      this.renderer.resize(val, this.height)
+    },
 
-  @Watch('width')
-  onChangeWidth (val: number): void {
-    this.renderer.resize(val, this.height)
-  }
+    height (val: number): void {
+      this.renderer.resize(this.width, val)
+    },
 
-  @Watch('height')
-  onChangeHeight (val: number): void {
-    this.renderer.resize(this.width, val)
-  }
+    backgroundColor (val: number): void {
+      this.renderer.backgroundColor = val
+    },
 
-  @Watch('backgroundColor')
-  onChangeBackgroundColor (val: number): void {
-    this.renderer.backgroundColor = val
-  }
+    resolution (val: number): void {
+      this.renderer.resolution = val
+    }
 
-  @Watch('resolution')
-  onChangeResolution (val: number): void {
-    this.renderer.resolution = val
+    // backgroundAlpha (val: number): void {
+    //   this.renderer.backgroundAlpha = val
+    // }
   }
-
-  // @Watch('backgroundAlpha')
-  // onChangeBackgroundAlpha (val: number): void {
-  //   this.renderer.backgroundAlpha = val
-  // }
-}
+})
+export default PApplication

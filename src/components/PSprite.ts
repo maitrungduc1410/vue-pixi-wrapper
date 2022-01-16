@@ -1,73 +1,74 @@
-import { Component, Prop, Watch } from 'vue-property-decorator'
-import { Sprite, Texture } from 'pixi.js'
 import PContainer from './PContainer'
-import { mixins } from 'vue-class-component'
+import { PropType } from 'vue'
 
 /**
  * The Sprite object is the base for all textured objects that are rendered to the screen
  *
  */
-@Component
-export default class PSprite extends mixins(PContainer) {
-  @Prop({ type: Number, default: 0 }) readonly anchorX!: number
-  @Prop({ type: Number, default: 0 }) readonly anchorY!: number
-  @Prop({ type: Number, default: 0 }) readonly blendMode!: number
-  @Prop({ type: Number }) readonly tint!: number
-  @Prop({ type: String }) readonly src!: string
-  @Prop({
-    type: Object,
-    validator: value => value instanceof Texture
-  }) readonly texture!: Texture
 
-  declare pDisplayObject: Sprite
-
-  override get instance (): Sprite {
-    if (!this.pDisplayObject) {
-      if (this.texture) {
-        this.pDisplayObject = new Sprite(this.texture)
-      } else {
-        this.pDisplayObject = this.src ? Sprite.from(this.src) : new Sprite()
-      }
-
-      this.pDisplayObject.anchor.set(this.anchorX, this.anchorY)
-
-      if (this.tint) {
-        this.pDisplayObject.tint = this.tint
-      }
-      if (this.blendMode) {
-        this.pDisplayObject.blendMode = this.blendMode
-      }
+const PSprite = PContainer.extend({
+  props: {
+    anchorX: { type: Number, default: 0 },
+    anchorY: { type: Number, default: 0 },
+    blendMode: { type: Number, default: 0 },
+    tint: { type: Number },
+    src: { type: String },
+    texture: {
+      type: Object as PropType<PIXI.Texture>,
+      validator: value => value instanceof window.PIXI.Texture
     }
-    return this.pDisplayObject
-  }
+  },
+  data (): { pDisplayObject: PIXI.Sprite | null } {
+    return {
+      pDisplayObject: null
+    }
+  },
+  computed: {
+    instance (): PIXI.Sprite {
+      if (!this.pDisplayObject) {
+        if (this.texture) {
+          this.pDisplayObject = new window.PIXI.Sprite(this.texture)
+        } else {
+          this.pDisplayObject = this.src ? window.PIXI.Sprite.from(this.src) : new window.PIXI.Sprite()
+        }
 
-  @Watch('anchorX')
-  onAnchorXChange (newValue: number): void {
-    this.pDisplayObject.anchor.set(newValue, this.anchorY)
-  }
+        this.pDisplayObject.anchor.set(this.anchorX, this.anchorY)
 
-  @Watch('anchorY')
-  onAnchorYChange (newValue: number): void {
-    this.pDisplayObject.anchor.set(this.anchorY, newValue)
-  }
+        if (this.tint) {
+          this.pDisplayObject.tint = this.tint
+        }
+        if (this.blendMode) {
+          this.pDisplayObject.blendMode = this.blendMode
+        }
+      }
+      return this.pDisplayObject
+    }
+  },
+  watch: {
+    anchorX (newValue: number): void {
+      this.pDisplayObject.anchor.set(newValue, this.anchorY)
+    },
 
-  @Watch('blendMode')
-  onBlendModeChange (newValue: number): void {
-    this.pDisplayObject.blendMode = newValue
-  }
+    anchorY (newValue: number): void {
+      this.pDisplayObject.anchor.set(this.anchorY, newValue)
+    },
 
-  @Watch('tint')
-  onTintChange (newValue: number): void {
-    this.pDisplayObject.tint = newValue
-  }
+    blendMode (newValue: number): void {
+      this.pDisplayObject.blendMode = newValue
+    },
 
-  @Watch('texture')
-  onTextureChange (newValue: Texture): void {
-    this.pDisplayObject.texture = newValue
-  }
+    tint (newValue: number): void {
+      this.pDisplayObject.tint = newValue
+    },
 
-  @Watch('src')
-  onSrcChange (newValue: string): void {
-    this.pDisplayObject.texture = Texture.from(newValue)
+    texture (newValue: PIXI.Texture): void {
+      this.pDisplayObject.texture = newValue
+    },
+
+    src (newValue: string): void {
+      this.pDisplayObject.texture = window.PIXI.Texture.from(newValue)
+    }
   }
-}
+})
+
+export default PSprite

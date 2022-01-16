@@ -1,269 +1,239 @@
-import {
-  DisplayObject,
-  Rectangle,
-  Filter,
-  IHitArea,
-  Container,
-  MaskData
-} from 'pixi.js'
-import { Vue, Prop, Watch, Component, Inject } from 'vue-property-decorator'
+import Vue, { PropType } from 'vue'
 import { eventHandlers, READY_EVENT } from '../constants'
-import { IApplication } from './PApplication'
 
-@Component
-export default class PDisplayObject extends Vue {
-  @Prop({ type: Array, default: () => { return [] } }) readonly events!: string[]
-  @Prop({ type: Boolean, default: true }) readonly shouldRender!: boolean // sometimes you just want to create this object and don't want to render it on screen (Eg: use it as mask for other object)
-
-  @Prop({ type: Number, default: 1 }) readonly alpha!: number
-  @Prop({ type: Number, default: 0 }) readonly angle!: number
-  @Prop({ type: Boolean, default: false }) readonly buttonMode!: boolean
-  @Prop({ type: Boolean, default: false }) readonly cacheAsBitmap!: boolean
-  @Prop({
-    type: String,
-    validator: value => ['help', 'wait', 'crosshair', 'not-allowed', 'zoom-in', 'grab', undefined].includes(value)
-  }) readonly cursor?: 'help' | 'wait' | 'crosshair' | 'not-allowed' | 'zoom-in' | 'grab' | undefined
-
-  @Prop({
-    type: Object,
-    validator: value => value instanceof Rectangle
-  }) readonly filterArea?: Rectangle
-
-  @Prop({
-    type: Object,
-    validator: value => value instanceof Filter
-  }) readonly filters?: Filter[]
-
-  @Prop({ default: null }) readonly hitArea!: IHitArea | null
-  @Prop({ type: Boolean, default: false }) readonly interactive!: boolean
-  @Prop({ type: Boolean, default: false }) readonly isMask!: boolean
-  @Prop({ type: Boolean, default: false }) readonly isSprite!: boolean
-  // @Prop({ default: null }) readonly localTransform!: Matrix
-
-  // TODO: handle this so that user doesn't need to pass native PIXI Container
-  @Prop({
-    type: Object,
-    validator: value => value instanceof Container || value instanceof MaskData
-  }) readonly mask?: Container | MaskData
-
-  @Prop({ type: String }) readonly name?: string
-  @Prop({ type: Number, default: 0 }) readonly pivotX!: number
-  @Prop({ type: Number, default: 0 }) readonly pivotY!: number
-  @Prop({ type: Boolean, default: true }) readonly renderable!: boolean
-  @Prop({ type: Number, default: 0 }) readonly rotation!: number
-  @Prop({ type: Number, default: 1 }) readonly scaleX!: number
-  @Prop({ type: Number, default: 1 }) readonly scaleY!: number
-  @Prop({ type: Number, default: 0 }) readonly skewX!: number
-  @Prop({ type: Number, default: 0 }) readonly skewY!: number
-  @Prop({ type: Boolean, default: true }) readonly visible!: boolean
-  @Prop({ type: Number, default: 0 }) readonly x!: number
-  @Prop({ type: Number, default: 0 }) readonly y!: number
-  @Prop({ type: Number, default: 0 }) readonly zIndex!: number
-
-  @Inject({ default: null }) readonly app!: IApplication
-
-  pDisplayObject!: DisplayObject
-
-  get instance (): DisplayObject { // will be override by child
-    return this.pDisplayObject
-  }
-
+const PDisplayObject = Vue.extend({
+  props: {
+    events: { type: Array as PropType<string[]>, default: () => { return [] } },
+    shouldRender: { type: Boolean, default: true },
+    alpha: { type: Number, default: 1 },
+    angle: { type: Number, default: 0 },
+    buttonMode: { type: Boolean, default: false },
+    cacheAsBitmap: { type: Boolean, default: false },
+    cursor: {
+      type: String,
+      validator: value => ['help', 'wait', 'crosshair', 'not-allowed', 'zoom-in', 'grab', undefined].includes(value)
+    },
+    filterArea: {
+      type: Object as PropType<PIXI.Rectangle>,
+      validator: value => value instanceof PIXI.Rectangle
+    },
+    filters: {
+      type: Array as PropType<PIXI.Filter[]>,
+      validator: value => Array.isArray(value)
+    },
+    hitArea: { default: null },
+    interactive: { type: Boolean, default: false },
+    isMask: { type: Boolean, default: false },
+    isSprite: { type: Boolean, default: false },
+    mask: {
+      type: Object as PropType<PIXI.Container | PIXI.MaskData>,
+      validator: value => value instanceof PIXI.Container || value instanceof PIXI.MaskData
+    },
+    name: { type: String },
+    pivotX: { type: Number, default: 0 },
+    pivotY: { type: Number, default: 0 },
+    renderable: { type: Boolean, default: true },
+    rotation: { type: Number, default: 0 },
+    scaleX: { type: Number, default: 1 },
+    scaleY: { type: Number, default: 1 },
+    skewX: { type: Number, default: 0 },
+    skewY: { type: Number, default: 0 },
+    visible: { type: Boolean, default: true },
+    x: { type: Number, default: 0 },
+    y: { type: Number, default: 0 },
+    zIndex: { type: Number, default: 0 }
+  },
+  inject: ['app'],
+  data (): { pDisplayObject: PIXI.DisplayObject } {
+    return {
+      pDisplayObject: new window.PIXI.DisplayObject()
+    }
+  },
+  computed: {
+    instance (): PIXI.DisplayObject {
+      return this.pDisplayObject
+    }
+  },
   beforeDestroy (): void {
     this.pDisplayObject && this.pDisplayObject.destroy()
-  }
-
+  },
   created (): void {
-    if (!this.app) {
+    const self = this as any
+    if (!self.app) {
       console.error('[RENDER ERROR]: You\'re trying to render component DisplayObject outside of a PIXI Application. All display objects (Container, Sprite,...) must be rendered within Application')
       this.$destroy()
       return
     }
 
-    this.app.EventBus.$on(READY_EVENT, () => {
+    self.app.EventBus.$on(READY_EVENT, () => {
       this.addToParent()
-      this.app.EventBus.$off(READY_EVENT) // remove this event listener as it may conflict with user's provide event
+      self.app.EventBus.$off(READY_EVENT) // remove this event listener as it may conflict with user's provide event
     })
 
-    if (this.app.isReady) {
+    if (self.app.isReady) {
       this.addToParent()
     }
-  }
+  },
+  methods: {
+    addToParent (): void {
+      if (this.shouldRender) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { instance }: any = this.$parent
+        instance.addChild(this.instance)
+      }
 
-  addToParent (): void {
-    if (this.shouldRender) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { instance }: any = this.$parent
-      instance.addChild(this.instance)
-    }
+      this.initProps()
+      this.initEvents()
+      this.$emit('ready', this.instance)
+    },
 
-    this.initProps()
-    this.initEvents()
-    this.$emit('ready', this.instance)
-  }
+    reinit (newVal: PIXI.DisplayObject): void {
+      this.pDisplayObject && this.pDisplayObject.destroy()
+      this.pDisplayObject = newVal
+      this.addToParent()
+    },
 
-  reinit (newVal: DisplayObject): void {
-    this.pDisplayObject && this.pDisplayObject.destroy()
-    this.pDisplayObject = newVal
-    this.addToParent()
-  }
+    initProps () {
+      this.instance.alpha = this.alpha
+      this.instance.angle = this.angle
+      this.instance.buttonMode = this.buttonMode
+      this.instance.cacheAsBitmap = this.cacheAsBitmap
 
-  private initProps () {
-    this.instance.alpha = this.alpha
-    this.instance.angle = this.angle
-    this.instance.buttonMode = this.buttonMode
-    this.instance.cacheAsBitmap = this.cacheAsBitmap
+      if (this.cursor) {
+        this.instance.cursor = this.cursor
+      }
 
-    if (this.cursor) {
-      this.instance.cursor = this.cursor
-    }
+      this.instance.interactive = this.interactive
+      this.instance.isMask = this.isMask
+      this.instance.isSprite = this.isSprite
+      this.instance.pivot.x = this.pivotX
+      this.instance.pivot.y = this.pivotY
+      this.instance.renderable = this.renderable
+      this.instance.rotation = this.rotation
+      this.instance.scale.x = this.scaleX
+      this.instance.scale.y = this.scaleY
+      this.instance.skew.x = this.skewX
+      this.instance.skew.y = this.skewY
+      this.instance.visible = this.visible
+      this.instance.x = this.x
+      this.instance.y = this.y
+      this.instance.zIndex = this.zIndex
 
-    this.instance.interactive = this.interactive
-    this.instance.isMask = this.isMask
-    this.instance.isSprite = this.isSprite
-    this.instance.pivot.x = this.pivotX
-    this.instance.pivot.y = this.pivotY
-    this.instance.renderable = this.renderable
-    this.instance.rotation = this.rotation
-    this.instance.scale.x = this.scaleX
-    this.instance.scale.y = this.scaleY
-    this.instance.skew.x = this.skewX
-    this.instance.skew.y = this.skewY
-    this.instance.visible = this.visible
-    this.instance.x = this.x
-    this.instance.y = this.y
-    this.instance.zIndex = this.zIndex
+      if (this.name) {
+        this.instance.name = this.name
+      }
 
-    if (this.name) {
-      this.instance.name = this.name
-    }
+      if (this.filters) {
+        this.instance.filters = this.filters
+      }
 
-    if (this.filters) {
-      this.instance.filters = this.filters
-    }
+      if (this.mask) {
+        this.instance.mask = this.mask
+      }
 
-    if (this.mask) {
-      this.instance.mask = this.mask
-    }
+      // TODO: filterArea, filters, hitArea
+    },
 
-    // TODO: filterArea, filters, hitArea
-  }
+    initEvents (): void {
+      for (const event of this.events) {
+        const index = eventHandlers.findIndex(item => item === event)
 
-  initEvents (): void {
-    for (const event of this.events) {
-      const index = eventHandlers.findIndex(item => item === event)
-
-      if (index === -1) {
-        console.error(`[Even listener error]: There's no event listener for event name '${event}'`)
-      } else {
-        this.instance.on(event, (e: Event) => this.$emit(`on${event}`, e))
+        if (index === -1) {
+          console.error(`[Even listener error]: There's no event listener for event name '${event}'`)
+        } else {
+          this.instance.on(event, (e: Event) => this.$emit(`on${event}`, e))
+        }
       }
     }
-  }
+  },
+  watch: {
+    alpha (newValue: number): void {
+      this.instance.alpha = newValue
+    },
 
-  @Watch('alpha')
-  onAlphaChange (newValue: number): void {
-    this.instance.alpha = newValue
-  }
+    angle (newValue: number): void {
+      this.instance.angle = newValue
+    },
 
-  @Watch('angle')
-  onAngleChange (newValue: number): void {
-    this.instance.angle = newValue
-  }
+    buttonMode (newValue: boolean): void {
+      this.instance.buttonMode = newValue
+    },
 
-  @Watch('buttonMode')
-  onButtonModeChange (newValue: boolean): void {
-    this.instance.buttonMode = newValue
-  }
+    // @Watch('cacheAsBitmap')
+    // onCacheAsBitmapChange (newValue: boolean): void {
+    //   this.instance.cacheAsBitmap = newValue
+    // },
 
-  // @Watch('cacheAsBitmap')
-  // onCacheAsBitmapChange (newValue: boolean): void {
-  //   this.instance.cacheAsBitmap = newValue
-  // }
+    cursor (newValue: string): void {
+      this.instance.cursor = newValue
+    },
 
-  @Watch('cursor')
-  onCursorChange (newValue: string): void {
-    this.instance.cursor = newValue
-  }
+    interactive (newValue: boolean): void {
+      this.instance.interactive = newValue
+    },
 
-  @Watch('interactive')
-  onInteractiveChange (newValue: boolean): void {
-    this.instance.interactive = newValue
-  }
+    isMask (newValue: boolean): void {
+      this.instance.isMask = newValue
+    },
 
-  @Watch('isMask')
-  onIsMaskChange (newValue: boolean): void {
-    this.instance.isMask = newValue
-  }
+    isSprite (newValue: boolean): void {
+      this.instance.isSprite = newValue
+    },
 
-  @Watch('isSprite')
-  onIsSpriteChange (newValue: boolean): void {
-    this.instance.isSprite = newValue
-  }
+    mask (newValue: PIXI.Container | PIXI.MaskData): void {
+      this.instance.mask = newValue
+    },
 
-  @Watch('mask')
-  onMaskChange (newValue: Container | MaskData): void {
-    this.instance.mask = newValue
-  }
+    pivotX (newValue: number): void {
+      this.instance.pivot.x = newValue
+    },
 
-  @Watch('pivotX')
-  onPivotXChange (newValue: number): void {
-    this.instance.pivot.x = newValue
-  }
+    pivotY (newValue: number): void {
+      this.instance.pivot.y = newValue
+    },
 
-  @Watch('pivotY')
-  onPivotYChange (newValue: number): void {
-    this.instance.pivot.y = newValue
-  }
+    renderable (newValue: boolean): void {
+      this.instance.renderable = newValue
+    },
 
-  @Watch('renderable')
-  onRenderableChange (newValue: boolean): void {
-    this.instance.renderable = newValue
-  }
+    rotation (newValue: number): void {
+      this.instance.rotation = newValue
+    },
 
-  @Watch('rotation')
-  onRotationChange (newValue: number): void {
-    this.instance.rotation = newValue
-  }
+    scaleX (newValue: number): void {
+      this.instance.scale.x = newValue
+    },
 
-  @Watch('scaleX')
-  onScaleXChange (newValue: number): void {
-    this.instance.scale.x = newValue
-  }
+    scaleY (newValue: number): void {
+      this.instance.scale.y = newValue
+    },
 
-  @Watch('scaleY')
-  onScaleYChange (newValue: number): void {
-    this.instance.scale.y = newValue
-  }
+    skewX (newValue: number): void {
+      this.instance.skew.x = newValue
+    },
 
-  @Watch('skewX')
-  onSkewXChange (newValue: number): void {
-    this.instance.skew.x = newValue
-  }
+    skewY (newValue: number): void {
+      this.instance.scale.y = newValue
+    },
 
-  @Watch('skewY')
-  onSkewYChange (newValue: number): void {
-    this.instance.scale.y = newValue
-  }
+    visible (newValue: boolean): void {
+      this.instance.visible = newValue
+    },
 
-  @Watch('visible')
-  onVisibleChange (newValue: boolean): void {
-    this.instance.visible = newValue
-  }
+    x (newValue: number): void {
+      this.instance.x = newValue
+    },
 
-  @Watch('x')
-  onXChange (newValue: number): void {
-    this.instance.x = newValue
-  }
+    y (newValue: number): void {
+      this.instance.y = newValue
+    },
 
-  @Watch('y')
-  onYChange (newValue: number): void {
-    this.instance.y = newValue
-  }
-
-  @Watch('zIndex')
-  onZIndexChange (newValue: number): void {
-    this.instance.zIndex = newValue
+    zIndex (newValue: number): void {
+      this.instance.zIndex = newValue
+    }
   }
 
   // TODO: watch on events change
-}
+})
+
+export default PDisplayObject

@@ -1,57 +1,56 @@
 import { VNode, CreateElement } from 'vue/types'
-import { Component, Prop, Watch } from 'vue-property-decorator'
-import { Container } from 'pixi.js'
-import DisplayObject from './PDisplayObject'
-import { mixins } from 'vue-class-component'
+import PDisplayObject from './PDisplayObject'
 
-@Component
-export default class PContainer extends mixins(DisplayObject) {
-  @Prop({ type: Number }) readonly width?: number
-  @Prop({ type: Number }) readonly height?: number
-  @Prop({ type: Boolean, default: true }) readonly interactiveChildren!: boolean
-
-  declare pDisplayObject: Container
-
-  render (h: CreateElement): VNode | undefined {
-    return this.$slots.default ? h('template', this.$slots.default) : undefined
-  }
-
-  override get instance (): Container {
-    if (!this.pDisplayObject) {
-      this.pDisplayObject = new Container()
+const PContainer = PDisplayObject.extend({
+  props: {
+    width: Number,
+    height: Number,
+    interactiveChildren: { type: Boolean, default: true }
+  },
+  data (): { pDisplayObject: PIXI.Container | null } {
+    return {
+      pDisplayObject: null
     }
+  },
+  render (h: CreateElement): VNode {
+    return h('template', this.$slots.default)
+  },
+  computed: {
+    instance (): PIXI.Container {
+      if (!this.pDisplayObject) {
+        this.pDisplayObject = new window.PIXI.Container()
+      }
 
-    return this.pDisplayObject
-  }
-
-  override created (): void {
+      return this.pDisplayObject
+    }
+  },
+  created (): void {
     if (this.pDisplayObject) this.initExtraProps()
-  }
+  },
+  methods: {
+    initExtraProps (): void {
+      this.pDisplayObject.interactiveChildren = this.interactiveChildren
 
-  initExtraProps (): void {
-    this.pDisplayObject.interactiveChildren = this.interactiveChildren
+      if (this.width) {
+        this.pDisplayObject.width = this.width
+      }
 
-    if (this.width) {
-      this.pDisplayObject.width = this.width
+      if (this.height) {
+        this.pDisplayObject.height = this.height
+      }
     }
-
-    if (this.height) {
-      this.pDisplayObject.height = this.height
+  },
+  watch: {
+    width (newValue: number): void {
+      this.pDisplayObject.width = newValue
+    },
+    height (newValue: number): void {
+      this.pDisplayObject.height = newValue
+    },
+    interactiveChildren (newValue: boolean): void {
+      this.pDisplayObject.interactiveChildren = newValue
     }
   }
+})
 
-  @Watch('width')
-  onWidthChange (newValue: number): void {
-    this.pDisplayObject.width = newValue
-  }
-
-  @Watch('height')
-  onHeightChange (newValue: number): void {
-    this.pDisplayObject.height = newValue
-  }
-
-  @Watch('interactiveChildren')
-  onInteractiveChildrenChange (newValue: boolean): void {
-    this.pDisplayObject.interactiveChildren = newValue
-  }
-}
+export default PContainer

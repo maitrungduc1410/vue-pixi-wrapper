@@ -1,11 +1,9 @@
 import Vue from 'vue'
 import App from './App.vue'
 
-if (process.env.NODE_ENV === 'development') {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const PIXI = require('pixi.js')
-  window.PIXI = PIXI
-}
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const PIXI = require('pixi.js');
+(window as any).PIXI = PIXI
 
 Vue.config.productionTip = false
 
