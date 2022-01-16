@@ -20,6 +20,36 @@ or
 npm install --save vue-pixi-wrapper
 ```
 
+## Setup
+### For normal Vue app
+In your `main.js` add this:
+```js
+const PIXI = require('pixi.js');
+window.PIXI = PIXI
+```
+
+### For Nuxt
+First create folder `plugins` if you haven't done so, then create a file name `pixijs.js` under `plugins` with the following content:
+
+```js
+import * as PIXI from 'pixi.js';
+global.PIXI = PIXI;
+```
+Next add this to `plugins` section in `nuxt.config.js`
+
+```js
+plugins: [
+  { src: '~/plugins/pixijs', mode: 'client', ssr: false}
+],
+```
+Now every time you write PIXI-related code, you need to wrap it under `<client-side>` because PIXI works only in client side
+```html
+<client-only>
+  <p-application>
+    ...
+  </p-application>
+</client-only>
+```
 ## Documentation
 
 Check our website: [https://maitrungduc.gitbook.io/vue-pixi-wrapper](https://maitrungduc.gitbook.io/vue-pixi-wrapper)
