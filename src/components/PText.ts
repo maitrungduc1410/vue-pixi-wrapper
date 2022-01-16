@@ -9,7 +9,7 @@ const PText = PSprite.extend({
   props: {
     text: { type: String, required: true },
     textStyle: {
-      type: Object
+      type: Object as PropType<PIXI.TextStyle>
     },
     canvas: {
       type: Object as PropType<HTMLCanvasElement>,
