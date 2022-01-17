@@ -1,6 +1,6 @@
 {
   "name": "vue-pixi-wrapper",
-  "version": "2.3.3",
+  "version": "2.3.4",
   "description": "🖐VueJS wrapper implementation for creating application with PIXI.js",
   "author": "Mai Trung Duc",
   "main": "./lib/index.js",

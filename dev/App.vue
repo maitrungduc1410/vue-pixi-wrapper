@@ -12,45 +12,24 @@
       :backgroundColor="backgroundColor"
       :resolution="resolution"
     >
-      <p-particle-container
-        :position="true"
-      >
-        <p-sprite
-          anchor={0.5}
-          :x="200"
-          :y="200"
-          :src="'https://s3-us-west-2.amazonaws.com/s.cdpn.io/693612/IaUrttj.png'"
+      <p-container>
+        <p-animated-sprite
+          :images="['https://pixijs.io/examples/examples/assets/flowerTop.png', 'https://pixijs.io/examples/examples/assets/eggHead.png']"
+          :animationSpeed="0.05"
         />
-        <p-sprite
-          anchor={0.5}
-          :x="250"
-          :y="250"
-          :src="'https://s3-us-west-2.amazonaws.com/s.cdpn.io/693612/IaUrttj.png'"
-        />
-        <p-sprite
-          anchor={0.5}
-          :x="300"
-          :y="300"
-          :src="'https://s3-us-west-2.amazonaws.com/s.cdpn.io/693612/IaUrttj.png'"
-        />
-      </p-particle-container>
+      </p-container>
     </p-application>
   </div>
 </template>
 
 <script>
-
-import {
-  PApplication,
-  PSprite,
-  PParticleContainer
-} from '@/'
+import { PApplication, PContainer, PAnimatedSprite } from '@/'
 
 export default {
   components: {
     PApplication,
-    PSprite,
-    PParticleContainer
+    PContainer,
+    PAnimatedSprite
   },
   data () {
     return {
@@ -74,6 +53,34 @@ export default {
       this.resolution = 2
     }
   }
+  // mounted () {
+  //   const app = new window.PIXI.Application()
+  //   document.body.appendChild(app.view)
+  //   const arr = [
+  //     'https://pixijs.io/examples/examples/assets/flowerTop.png',
+  //     'https://pixijs.io/examples/examples/assets/eggHead.png'
+  //   ]
+  //   const textureArray = []
+  //   for (const image of arr) {
+  //     const texture = window.PIXI.Texture.from(image)
+  //     textureArray.push(texture)
+  //   }
+
+  //   // create an AnimatedSprite (brings back memories from the days of Flash, right ?)
+  //   const anim = new window.PIXI.AnimatedSprite(textureArray)
+
+  //   /*
+  //    * An AnimatedSprite inherits all the properties of a PIXI sprite
+  //    * so you can change its position, its anchor, mask it, etc
+  //    */
+  //   anim.x = app.screen.width / 2
+  //   anim.y = app.screen.height / 2
+  //   anim.anchor.set(0.5)
+  //   anim.animationSpeed = 0.05
+  //   anim.play()
+
+  //   app.stage.addChild(anim)
+  // }
 }
 </script>
 

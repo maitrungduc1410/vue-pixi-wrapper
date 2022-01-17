@@ -8,7 +8,7 @@ import { PropType } from 'vue'
 const PAnimatedSprite = PSprite.extend({
   props: {
     images: { type: Array as PropType<string[]>, default: [] },
-    autoUpdate: Boolean,
+    autoUpdate: { type: Boolean, default: true },
     animationSpeed: { type: Number, default: 1 },
     initialFrame: { type: Number, default: 0 }
   },
