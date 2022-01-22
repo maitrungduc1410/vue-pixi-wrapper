@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <div>
+      <button @click="addImage">Add image</button>
       <button @click="changeWidth">Change Width</button>
       <button @click="changeHeight">Change Height</button>
       <button @click="changeBackgroundColor">Change Background Color</button>
@@ -14,7 +15,7 @@
     >
       <p-container>
         <p-animated-sprite
-          :images="['https://pixijs.io/examples/examples/assets/flowerTop.png', 'https://pixijs.io/examples/examples/assets/eggHead.png']"
+          :images="images"
           :animationSpeed="0.05"
         />
       </p-container>
@@ -36,7 +37,8 @@ export default {
       width: 800,
       height: 600,
       backgroundColor: 0x000000,
-      resolution: 1
+      resolution: 1,
+      images: ['https://pixijs.io/examples/examples/assets/flowerTop.png', 'https://pixijs.io/examples/examples/assets/eggHead.png']
     }
   },
   methods: {
@@ -51,36 +53,11 @@ export default {
     },
     changeResolution () {
       this.resolution = 2
+    },
+    addImage () {
+      this.images.push('https://pixijs.io/examples/examples/assets/bg_rotate.jpg')
     }
   }
-  // mounted () {
-  //   const app = new window.PIXI.Application()
-  //   document.body.appendChild(app.view)
-  //   const arr = [
-  //     'https://pixijs.io/examples/examples/assets/flowerTop.png',
-  //     'https://pixijs.io/examples/examples/assets/eggHead.png'
-  //   ]
-  //   const textureArray = []
-  //   for (const image of arr) {
-  //     const texture = window.PIXI.Texture.from(image)
-  //     textureArray.push(texture)
-  //   }
-
-  //   // create an AnimatedSprite (brings back memories from the days of Flash, right ?)
-  //   const anim = new window.PIXI.AnimatedSprite(textureArray)
-
-  //   /*
-  //    * An AnimatedSprite inherits all the properties of a PIXI sprite
-  //    * so you can change its position, its anchor, mask it, etc
-  //    */
-  //   anim.x = app.screen.width / 2
-  //   anim.y = app.screen.height / 2
-  //   anim.anchor.set(0.5)
-  //   anim.animationSpeed = 0.05
-  //   anim.play()
-
-  //   app.stage.addChild(anim)
-  // }
 }
 </script>
 

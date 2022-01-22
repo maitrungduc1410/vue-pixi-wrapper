@@ -45,6 +45,22 @@ const PAnimatedSprite = PSprite.extend({
 
     autoUpdate (newValue: boolean): void {
       this.pDisplayObject.autoUpdate = newValue
+    },
+    images (newValue: string[]) {
+      for (const t of this.textureArray) {
+        t.destroy(true)
+      }
+
+      this.textureArray = []
+      for (const image of newValue) {
+        const texture = window.PIXI.Texture.from(image)
+        this.textureArray.push(texture)
+      }
+
+      const newObj = new window.PIXI.AnimatedSprite(this.textureArray, this.autoUpdate)
+      newObj.gotoAndPlay(this.initialFrame)
+      newObj.animationSpeed = this.animationSpeed
+      this.reinit(newObj)
     }
   }
 })
